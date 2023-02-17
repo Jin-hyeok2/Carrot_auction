@@ -1,9 +1,12 @@
-package com.zerobase.carrot_auction.entity;
+package com.zerobase.carrot_auction.repository.entity;
 
 import com.sun.istack.NotNull;
-import com.zerobase.carrot_auction.repository.entity.UserEntity;
+import com.zerobase.carrot_auction.model.status;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,12 +17,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class Product {
 
 	@Id
@@ -34,15 +39,15 @@ public class Product {
 	@NotNull
 	private boolean isAuction;
 	@NotNull
-	private com.zerobase.carrot_auction.model.status status;
+	@Enumerated(value = EnumType.STRING)
+	private status status;
 	private String title;
 	private String siDo;
 	private String guGun;
 	private int price;
 	private String description;
-	private int end_period;
+	private int endPeriod;
 	@CreatedDate
-	@NotNull
 	private LocalDateTime createAt;
 
 

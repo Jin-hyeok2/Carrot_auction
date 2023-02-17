@@ -1,7 +1,7 @@
 package com.zerobase.carrot_auction.dto;
 
-import com.zerobase.carrot_auction.entity.Product;
 import com.zerobase.carrot_auction.model.status;
+import com.zerobase.carrot_auction.repository.entity.Product;
 import com.zerobase.carrot_auction.repository.entity.UserEntity;
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -19,7 +19,7 @@ public class ProductDto {
 	private String guGun;
 	private int price;
 	private String description;
-	private int end_period;
+	private int endPeriod;
 	private LocalDateTime createAt;
 
 	public static ProductDto of(Product product) {
@@ -34,7 +34,7 @@ public class ProductDto {
 			.guGun(product.getGuGun())
 			.price(product.getPrice())
 			.description(product.getDescription())
-			.end_period(product.getEnd_period())
+			.endPeriod(product.getEndPeriod())
 			.createAt(product.getCreateAt())
 			.build();
 	}

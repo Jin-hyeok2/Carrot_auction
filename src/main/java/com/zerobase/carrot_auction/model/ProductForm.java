@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 public class ProductForm {
 
 	private String title;
-	private boolean isAuction;
+	private boolean auctionYn;
 	private String siDo;
 	private String guGun;
 	private int price;
 	private String description;
-	private int end_period;
+	private int endPeriod;
 }
