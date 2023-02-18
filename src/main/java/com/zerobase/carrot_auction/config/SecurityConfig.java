@@ -1,6 +1,5 @@
 package com.zerobase.carrot_auction.config;
 
-import com.zerobase.carrot_auction.dto.User;
 import com.zerobase.carrot_auction.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,18 +16,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtAuthFilter jwtAuthFilter;
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.httpBasic().disable()
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/**/signup", "/**/signin").permitAll()
-                .and()
-                .addFilterBefore(this.jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
+	private final JwtAuthFilter jwtAuthFilter;
+
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.httpBasic().disable()
+			.csrf().disable()
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
+			.authorizeRequests()
+			.antMatchers("/**/signup", "/**/signin").permitAll()
+			.and()
+			.addFilterBefore(this.jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+		return http.build();
+	}
 }

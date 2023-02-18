@@ -1,9 +1,16 @@
 package com.zerobase.carrot_auction.repository.entity;
 
-import lombok.*;
-
-import javax.management.relation.Role;
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
@@ -11,18 +18,19 @@ import javax.persistence.*;
 @Entity
 @Table(name = "ROLES")
 public class RoleEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    private String roleName;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "USER_ID")
-    private UserEntity user;
+	private String roleName;
 
-    public RoleEntity (String roleName, UserEntity user) {
-        this.roleName = roleName;
-        this.user = user;
-    }
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "USER_ID")
+	private UserEntity user;
+
+	public RoleEntity(String roleName, UserEntity user) {
+		this.roleName = roleName;
+		this.user = user;
+	}
 }
