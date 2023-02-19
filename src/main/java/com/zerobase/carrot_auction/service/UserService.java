@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +48,9 @@ public class UserService implements UserDetailsService {
 
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
         UserEntity userEntity = user.dtoToEntity();
+        String authCode = createCode();
+        log.info("authCode is " + authCode);
+        userEntity.setAuthCode(authCode);
         var result = userRepository.save(userEntity);
         var list = roleRepository.saveAll(user.getRoles()
                 .stream()
@@ -54,5 +58,38 @@ public class UserService implements UserDetailsService {
                 .collect(Collectors.toList()));
 
         return new Signup(result, list);
+    }
+
+    public void verifyMail(User.Request.VerifyMail request) {
+        UserEntity user = userRepository.findById(request.getId())
+                .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다"));
+        if(request.getAuthCode().equals(user.getAuthCode())) {
+            user.setAuth(true);
+            userRepository.save(user);
+        } else {
+            throw new RuntimeException("인증코드가 맞지 않습니다");
+        }
+    }
+
+    private String createCode() {
+        Random random = new Random();
+        StringBuffer key = new StringBuffer();
+
+        for (int i = 0; i < 16; i++) {
+            int index = random.nextInt(3);
+            switch (index) {
+                case 0:
+                    key.append((char)(random.nextInt(26) + 97));
+                    break;
+                case 1:
+                    key.append((char)(random.nextInt(26) + 65));
+                    break;
+                case 2:
+                    key.append((random.nextInt(10)));
+                    break;
+            }
+        }
+
+        return key.toString();
     }
 }

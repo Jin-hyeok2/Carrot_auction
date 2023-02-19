@@ -67,17 +67,26 @@ public class User {
             private String nickname;
         }
 
+        @Getter
+        @RequiredArgsConstructor
+        public static class VerifyMail {
+            private Long id;
+            private String authCode;
+        }
+
     }
 
     public static class Response {
         @Data
         public static class Signup {
+            private Long id;
             private String email;
             private String nickname;
             private String phone;
             private List<String> roles;
 
             public Signup(UserEntity userEntity, List<RoleEntity> roleEntity) {
+                this.id = userEntity.getId();
                 this.email = userEntity.getEmail();
                 this.nickname = userEntity.getNickname();
                 this.phone = userEntity.getPhone();

@@ -24,6 +24,13 @@ public class UserController {
         return ResponseEntity.ok(new Response("success", user));
     }
 
+    @PutMapping("/verify")
+    public ResponseEntity<?> verify(@RequestBody User.Request.VerifyMail request) {
+        userService.verifyMail(request);
+
+        return ResponseEntity.ok(new Response("success", null));
+    }
+
     public ResponseEntity<?> signIn(@RequestBody User.Request.SignIn request) {
         return null;
     }
