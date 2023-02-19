@@ -10,9 +10,11 @@ import java.util.stream.Collectors;
 public class User {
 
     public static class Request {
+
         @Data
         @Builder
         public static class SignUp {
+
             private String email;
             private String password;
             private String nickname;
@@ -37,6 +39,7 @@ public class User {
         @RequiredArgsConstructor
         @ToString
         public static class SignIn {
+
             private String email;
             private String password;
         }
@@ -44,6 +47,7 @@ public class User {
         @Data
         @Builder
         public static class GetInfo {
+
             private String email;
             private String nickname;
             private String phone;
@@ -55,16 +59,7 @@ public class User {
                         .phone(userEntity.getPhone())
                         .build();
             }
-        }
 
-        @Getter
-        @RequiredArgsConstructor
-        @ToString
-        public static class EditInfo {
-            private String curPassword;
-            private String password;
-            private String phone;
-            private String nickname;
         }
 
         @Getter
@@ -74,6 +69,16 @@ public class User {
             private String authCode;
         }
 
+        @Getter
+        @RequiredArgsConstructor
+        @ToString
+        public static class EditInfo {
+
+            private String curPassword;
+            private String password;
+            private String phone;
+            private String nickname;
+        }
     }
 
     public static class Response {

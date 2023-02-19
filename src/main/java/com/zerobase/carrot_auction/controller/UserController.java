@@ -14,15 +14,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 public class UserController {
 
-    private final UserService userService;
+	private final UserService userService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody User.Request.SignUp request) {
-        User.Response.Signup user = userService.signUp(request);
-        log.info(user.toString());
+	@PostMapping("/signup")
+	public ResponseEntity<?> signUp(@RequestBody User.Request.SignUp request) {
+		User.Response.Signup user = userService.signUp(request);
+		log.info(user.toString());
 
-        return ResponseEntity.ok(new Response("success", user));
-    }
+		return ResponseEntity.ok(new Response("success", user));
+	}
 
     @PutMapping("/verify")
     public ResponseEntity<?> verify(@RequestBody User.Request.VerifyMail request) {
@@ -35,15 +35,16 @@ public class UserController {
         return null;
     }
 
-    public ResponseEntity<?> getInfo(@RequestHeader String token) {
-        return null;
-    }
+	public ResponseEntity<?> getInfo(@RequestHeader String token) {
+		return null;
+	}
 
-    public ResponseEntity<?> editInfo(@RequestHeader String token, @RequestBody User.Request.EditInfo request) {
-        return null;
-    }
+	public ResponseEntity<?> editInfo(@RequestHeader String token,
+		@RequestBody User.Request.EditInfo request) {
+		return null;
+	}
 
-    public ResponseEntity<?> signOut() {
-        return null;
-    }
+	public ResponseEntity<?> signOut() {
+		return null;
+	}
 }

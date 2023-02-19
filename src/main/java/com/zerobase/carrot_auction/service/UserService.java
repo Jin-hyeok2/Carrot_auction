@@ -6,6 +6,7 @@ import com.zerobase.carrot_auction.repository.RoleRepository;
 import com.zerobase.carrot_auction.repository.UserRepository;
 import com.zerobase.carrot_auction.repository.entity.RoleEntity;
 import com.zerobase.carrot_auction.repository.entity.UserEntity;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,26 +16,26 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UserService implements UserDetailsService {
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return this.userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Email: " + email + " not found"));
-    }
+	private final UserRepository userRepository;
+	private final RoleRepository roleRepository;
+	private final PasswordEncoder passwordEncoder;
 
-    public Signup signUp(User.Request.SignUp user) {
-        boolean isExistEmail = this.userRepository.existsByEmail(user.getEmail());
-        boolean isExistNickname = this.userRepository.existsByNickname(user.getNickname());
-        boolean isExistPhone = this.userRepository.existsByNickname(user.getNickname());
+	@Override
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		return this.userRepository.findByEmail(email)
+			.orElseThrow(() -> new RuntimeException("Email: " + email + " not found"));
+	}
+
+	public Signup signUp(User.Request.SignUp user) {
+		boolean isExistEmail = this.userRepository.existsByEmail(user.getEmail());
+		boolean isExistNickname = this.userRepository.existsByNickname(user.getNickname());
+		boolean isExistPhone = this.userRepository.existsByNickname(user.getNickname());
 
         if (isExistEmail) {
             throw new RuntimeException("이미 사용 중인 아이디입니다.");
@@ -45,11 +46,10 @@ public class UserService implements UserDetailsService {
         if (isExistPhone) {
             throw new RuntimeException("이미 사용 중인 핸드폰 번호입니다.");
         }
-
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
         UserEntity userEntity = user.dtoToEntity();
         String authCode = createCode();
-        log.info("authCode is " + authCode);
+//        log.info("authCode is " + authCode);
         userEntity.setAuthCode(authCode);
         var result = userRepository.save(userEntity);
         var list = roleRepository.saveAll(user.getRoles()
