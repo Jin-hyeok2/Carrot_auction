@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Random;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -35,24 +37,59 @@ public class UserService implements UserDetailsService {
 		boolean isExistNickname = this.userRepository.existsByNickname(user.getNickname());
 		boolean isExistPhone = this.userRepository.existsByNickname(user.getNickname());
 
-		if (isExistEmail) {
-			throw new RuntimeException("이미 사용 중인 아이디입니다.");
-		}
-		if (isExistNickname) {
-			throw new RuntimeException("이미 사용 중인 닉네임입니다.");
-		}
-		if (isExistPhone) {
-			throw new RuntimeException("이미 사용 중인 핸드폰 번호입니다.");
-		}
+        if (isExistEmail) {
+            throw new RuntimeException("이미 사용 중인 아이디입니다.");
+        }
+        if (isExistNickname) {
+            throw new RuntimeException("이미 사용 중인 닉네임입니다.");
+        }
+        if (isExistPhone) {
+            throw new RuntimeException("이미 사용 중인 핸드폰 번호입니다.");
+        }
+        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+        UserEntity userEntity = user.dtoToEntity();
+        String authCode = createCode();
+//        log.info("authCode is " + authCode);
+        userEntity.setAuthCode(authCode);
+        var result = userRepository.save(userEntity);
+        var list = roleRepository.saveAll(user.getRoles()
+                .stream()
+                .map((role) -> new RoleEntity(role, userEntity))
+                .collect(Collectors.toList()));
 
-		user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-		UserEntity userEntity = user.dtoToEntity();
-		var result = userRepository.save(userEntity);
-		var list = roleRepository.saveAll(user.getRoles()
-			.stream()
-			.map((role) -> new RoleEntity(role, userEntity))
-			.collect(Collectors.toList()));
+        return new Signup(result, list);
+    }
 
-		return new Signup(result, list);
-	}
+    public void verifyMail(User.Request.VerifyMail request) {
+        UserEntity user = userRepository.findById(request.getId())
+                .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다"));
+        if(request.getAuthCode().equals(user.getAuthCode())) {
+            user.setAuth(true);
+            userRepository.save(user);
+        } else {
+            throw new RuntimeException("인증코드가 맞지 않습니다");
+        }
+    }
+
+    private String createCode() {
+        Random random = new Random();
+        StringBuffer key = new StringBuffer();
+
+        for (int i = 0; i < 16; i++) {
+            int index = random.nextInt(3);
+            switch (index) {
+                case 0:
+                    key.append((char)(random.nextInt(26) + 97));
+                    break;
+                case 1:
+                    key.append((char)(random.nextInt(26) + 65));
+                    break;
+                case 2:
+                    key.append((random.nextInt(10)));
+                    break;
+            }
+        }
+
+        return key.toString();
+    }
 }

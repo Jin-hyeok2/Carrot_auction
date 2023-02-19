@@ -6,11 +6,7 @@ import com.zerobase.carrot_auction.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -28,9 +24,16 @@ public class UserController {
 		return ResponseEntity.ok(new Response("success", user));
 	}
 
-	public ResponseEntity<?> signIn(@RequestBody User.Request.SignIn request) {
-		return null;
-	}
+    @PutMapping("/verify")
+    public ResponseEntity<?> verify(@RequestBody User.Request.VerifyMail request) {
+        userService.verifyMail(request);
+
+        return ResponseEntity.ok(new Response("success", null));
+    }
+
+    public ResponseEntity<?> signIn(@RequestBody User.Request.SignIn request) {
+        return null;
+    }
 
 	public ResponseEntity<?> getInfo(@RequestHeader String token) {
 		return null;
