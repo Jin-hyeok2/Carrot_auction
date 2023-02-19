@@ -1,12 +1,17 @@
 package com.zerobase.carrot_auction.security;
 
+import com.zerobase.carrot_auction.repository.entity.RoleEntity;
 import com.zerobase.carrot_auction.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+
+import java.security.Key;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,10 +31,12 @@ public class TokenProvider {
 	@Value("{spring.jwt.secret}")
 	private String secretKey;
 
-	public String generateToken(String email, List<String> roles) {
+	public String generateToken(String email, List<RoleEntity> roles) {
 		Claims claims = Jwts.claims();
 		claims.setSubject(email);
-		claims.put(KEY_ROLES, roles);
+		claims.put(KEY_ROLES, roles
+				.stream().map(RoleEntity::getRoleName)
+				.collect(Collectors.toList()));
 
 		Date now = new Date();
 		Date expiredDate = new Date(now.getTime() + TOKEN_EXPIRE_TIME);
@@ -38,7 +45,7 @@ public class TokenProvider {
 			.setClaims(claims)
 			.setIssuedAt(now)
 			.setExpiration(expiredDate)
-			.signWith(SignatureAlgorithm.ES512, this.secretKey)
+			.signWith(SignatureAlgorithm.HS512, this.secretKey)
 			.compact();
 	}
 

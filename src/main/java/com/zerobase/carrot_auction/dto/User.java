@@ -23,15 +23,20 @@ public class User {
 
 
             public UserEntity dtoToEntity() {
-                return UserEntity.builder()
+                UserEntity user = UserEntity.builder()
                         .email(this.email)
                         .password(this.password)
                         .nickname(this.nickname)
                         .phone(this.phone)
                         .isAuth(false)
-                        .authCode("")
                         .temperature(0)
                         .build();
+
+                user.setRoles(this.roles
+                        .stream()
+                        .map(role -> new RoleEntity(role, user))
+                        .collect(Collectors.toList()));
+                return user;
             }
         }
 
@@ -90,17 +95,21 @@ public class User {
             private String phone;
             private List<String> roles;
 
-            public Signup(UserEntity userEntity, List<RoleEntity> roleEntity) {
+            public Signup(UserEntity userEntity) {
                 this.id = userEntity.getId();
                 this.email = userEntity.getEmail();
                 this.nickname = userEntity.getNickname();
                 this.phone = userEntity.getPhone();
-                this.roles = roleEntity
+                this.roles = userEntity.getRoles()
                         .stream()
                         .map(RoleEntity::getRoleName)
                         .collect(Collectors.toList());
             }
         }
-    }
 
+        @Data
+        public static class SignIn {
+            private String Token;
+        }
+    }
 }

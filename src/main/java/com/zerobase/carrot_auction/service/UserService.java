@@ -7,6 +7,8 @@ import com.zerobase.carrot_auction.repository.UserRepository;
 import com.zerobase.carrot_auction.repository.entity.RoleEntity;
 import com.zerobase.carrot_auction.repository.entity.UserEntity;
 import java.util.stream.Collectors;
+
+import com.zerobase.carrot_auction.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +25,6 @@ import java.util.Random;
 public class UserService implements UserDetailsService {
 
 	private final UserRepository userRepository;
-	private final RoleRepository roleRepository;
 	private final PasswordEncoder passwordEncoder;
 
 	@Override
@@ -32,10 +33,10 @@ public class UserService implements UserDetailsService {
 			.orElseThrow(() -> new RuntimeException("Email: " + email + " not found"));
 	}
 
-	public Signup signUp(User.Request.SignUp user) {
-		boolean isExistEmail = this.userRepository.existsByEmail(user.getEmail());
-		boolean isExistNickname = this.userRepository.existsByNickname(user.getNickname());
-		boolean isExistPhone = this.userRepository.existsByNickname(user.getNickname());
+	public UserEntity signUp(User.Request.SignUp request) {
+		boolean isExistEmail = this.userRepository.existsByEmail(request.getEmail());
+		boolean isExistNickname = this.userRepository.existsByNickname(request.getNickname());
+		boolean isExistPhone = this.userRepository.existsByNickname(request.getNickname());
 
         if (isExistEmail) {
             throw new RuntimeException("이미 사용 중인 아이디입니다.");
@@ -46,18 +47,14 @@ public class UserService implements UserDetailsService {
         if (isExistPhone) {
             throw new RuntimeException("이미 사용 중인 핸드폰 번호입니다.");
         }
-        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-        UserEntity userEntity = user.dtoToEntity();
+        request.setPassword(this.passwordEncoder.encode(request.getPassword()));
+        UserEntity user = request.dtoToEntity();
         String authCode = createCode();
 //        log.info("authCode is " + authCode);
-        userEntity.setAuthCode(authCode);
-        var result = userRepository.save(userEntity);
-        var list = roleRepository.saveAll(user.getRoles()
-                .stream()
-                .map((role) -> new RoleEntity(role, userEntity))
-                .collect(Collectors.toList()));
+        user.setAuthCode(authCode);
+        userRepository.save(user);
 
-        return new Signup(result, list);
+        return user;
     }
 
     public void verifyMail(User.Request.VerifyMail request) {
@@ -69,6 +66,19 @@ public class UserService implements UserDetailsService {
         } else {
             throw new RuntimeException("인증코드가 맞지 않습니다");
         }
+    }
+
+    public UserEntity signIn(User.Request.SignIn request) {
+        UserEntity user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다"));
+        if(!user.isAuth()) {
+            throw new RuntimeException("이메일 인증이 완료되지 않았습니다");
+        }
+        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("비밀번호가 일치하지 않습니다");
+        }
+
+        return user;
     }
 
     private String createCode() {
