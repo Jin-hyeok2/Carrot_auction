@@ -1,7 +1,7 @@
 package com.zerobase.carrot_auction.repository.entity;
 
 import com.sun.istack.NotNull;
-import com.zerobase.carrot_auction.model.status;
+import com.zerobase.carrot_auction.model.Status;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -40,7 +40,7 @@ public class Product {
 	private boolean isAuction;
 	@NotNull
 	@Enumerated(value = EnumType.STRING)
-	private status status;
+	private Status status;
 	private String title;
 	private String siDo;
 	private String guGun;
@@ -50,5 +50,11 @@ public class Product {
 	@CreatedDate
 	private LocalDateTime createAt;
 
+	public Long getSellerId() {
+		return seller.getId();
+	}
 
+	public Long getCustomerId() {
+		return customer.getId();
+	}
 }

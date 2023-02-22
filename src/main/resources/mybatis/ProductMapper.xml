@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zerobase.carrot_auction.mapper.ProductMapper">
+  <sql id="selectListWhere">
+    <if test="searchWord != null">
+      AND title like concat('%', #{searchWord}, '%')
+    </if>
+    <if test="siDo != null">
+      AND si_do like concat('%', #{siDo}, '%')
+      <if test="guGun != null">
+        AND gu_gun like concat('%', #{guGun}, '%')
+      </if>
+    </if>
+    <if test="auctionYn != null ">
+      <choose>
+        <when test="auctionYn = 1">
+          AND is_auction = 1
+        </when>
+        <otherwise>
+          AND is_auction = 0;
+        </otherwise>
+      </choose>
+    </if>
+  </sql>
+
+  <select id="selectListCount" resultType="long">
+    select count(*)
+    from product
+    where 1 = 1
+    <include refid="selectListWhere"/>
+  </select>
+
+  <select id="selectList" parameterType="com.zerobase.carrot_auction.model.ProductSearchForm"
+    resultType="com.zerobase.carrot_auction.dto.ProductDto">
+    select *
+    from product
+    where 1 = 1
+    <include refid="selectListWhere"/>
+    order by create_at desc
+    limit #{pageStart}, #{pageEnd}
+  </select>
+
+</mapper>
