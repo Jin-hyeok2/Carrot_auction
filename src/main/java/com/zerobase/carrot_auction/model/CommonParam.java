@@ -24,8 +24,8 @@ public class CommonParam {
 			pageIndex = 1;
 		}
 
-		if (pageSize < 10) {
-			pageSize = 10;
+		if (pageSize < 5) {
+			pageSize = 5;
 		}
 	}
 }

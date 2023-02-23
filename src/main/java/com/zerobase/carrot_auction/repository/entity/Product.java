@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -24,6 +25,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
 @EntityListeners(AuditingEntityListener.class)
 public class Product {
 
@@ -50,11 +52,14 @@ public class Product {
 	@CreatedDate
 	private LocalDateTime createAt;
 
-	public Long getSellerId() {
-		return seller.getId();
+	public String getSellerNickName() {
+		return seller.getNickname();
 	}
 
-	public Long getCustomerId() {
-		return customer.getId();
+	public String getCustomerNickName() {
+		if (customer != null) {
+			return customer.getNickname();
+		}
+		return null;
 	}
 }

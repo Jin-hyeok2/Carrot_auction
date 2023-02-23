@@ -26,17 +26,14 @@ public class ProductDto {
 	private String siDo;
 	private Status status;
 	private String title;
-	private Long customerId;
-	private Long sellerId;
-
-	long totalCount;
-	long seq;
+	private String customerNickname;
+	private String sellerNickname;
 
 	public static ProductDto of(Product product) {
 		return ProductDto.builder()
 			.id(product.getId())
-			.customerId(product.getCustomerId())
-			.sellerId(product.getSellerId())
+			.customerNickname(product.getCustomerNickName())
+			.sellerNickname(product.getSellerNickName())
 			.isAuction(product.isAuction())
 			.status(product.getStatus())
 			.title(product.getTitle())

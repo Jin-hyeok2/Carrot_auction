@@ -6,12 +6,14 @@ import com.zerobase.carrot_auction.Exception.ProductException;
 import com.zerobase.carrot_auction.dto.ProductDto;
 import com.zerobase.carrot_auction.mapper.ProductMapper;
 import com.zerobase.carrot_auction.model.ProductForm;
+import com.zerobase.carrot_auction.model.ProductListResponse;
 import com.zerobase.carrot_auction.model.ProductSearchForm;
 import com.zerobase.carrot_auction.model.Status;
 import com.zerobase.carrot_auction.repository.ProductRepository;
 import com.zerobase.carrot_auction.repository.UserRepository;
 import com.zerobase.carrot_auction.repository.entity.Product;
 import com.zerobase.carrot_auction.repository.entity.UserEntity;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -54,19 +56,17 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<ProductDto> productList(ProductSearchForm productSearchForm) {
+	public ProductListResponse productList(ProductSearchForm productSearchForm) {
 		long totalCount = productMapper.selectListCount(productSearchForm);
 
-		List<ProductDto> list = productMapper.selectList(productSearchForm);
+		List<Product> list = productMapper.selectList(productSearchForm);
+		ArrayList<ProductDto> productDtos = new ArrayList<>();
 		if (!CollectionUtils.isEmpty(list)) {
-			int i = 0;
-			for (ProductDto x : list) {
-				x.setTotalCount(totalCount);
-				x.setSeq(totalCount - productSearchForm.getPageStart() - i);
-				i++;
+			for (Product product : list) {
+				ProductDto productDto = ProductDto.of(product);
+				productDtos.add(productDto);
 			}
 		}
-
-		return list;
+		return new ProductListResponse(productDtos, totalCount);
 	}
 }
