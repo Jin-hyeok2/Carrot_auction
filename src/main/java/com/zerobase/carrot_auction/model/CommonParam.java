@@ -1,31 +1,15 @@
 package com.zerobase.carrot_auction.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommonParam {
 
-	long pageIndex;
+	long pageNum;
 	long pageSize;
 	private String searchWord;
-
-	public long getPageStart() {
-		init();
-		return (pageIndex - 1) * pageSize;
-	}
-
-	public long getPageEnd() {
-		init();
-		return pageSize;
-	}
-
-	public void init() {
-		if (pageIndex < 1) {
-			pageIndex = 1;
-		}
-
-		if (pageSize < 5) {
-			pageSize = 5;
-		}
-	}
 }

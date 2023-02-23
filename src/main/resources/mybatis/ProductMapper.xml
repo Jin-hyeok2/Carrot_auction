@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zerobase.carrot_auction.mapper.ProductMapper">
-  <resultMap id="productSelectRM" type="com.zerobase.carrot_auction.repository.entity.Product">
+  <resultMap id="productSelectRM" type="com.zerobase.carrot_auction.dto.ProductDto">
     <id property="id" column="id"/>
     <result property="createAt" column="create_at"/>
     <result property="description" column="description"/>
@@ -14,20 +14,8 @@
     <result property="siDo" column="si_do"/>
     <result property="status" column="status"/>
     <result property="title" column="title"/>
-    <association property="seller" column="seller_id" select="selectUser"/>
-    <association property="customer" column="customer_id" select="selectUser"/>
-  </resultMap>
-
-  <resultMap id="users" type="com.zerobase.carrot_auction.repository.entity.UserEntity">
-    <id property="id" column="id"/>
-    <result property="createdAt" column="created_at"/>
-    <result property="email" column="email"/>
-    <result property="isAuth" column="is_auth"/>
-    <result property="nickname" column="nickname"/>
-    <result property="password" column="password"/>
-    <result property="phone" column="phone"/>
-    <result property="temperature" column="temperature"/>
-    <result property="updatedAt" column="updated_at"/>
+    <association property="sellerNickname" column="seller_id" select="selectUser"/>
+    <association property="customerNickname" column="customer_id" select="selectUser"/>
   </resultMap>
 
   <sql id="selectListWhere">
@@ -52,13 +40,6 @@
     </if>
   </sql>
 
-  <select id="selectListCount" resultType="long">
-    select count(*)
-    from product
-    where 1 = 1
-    <include refid="selectListWhere"/>
-  </select>
-
   <select id="selectList" parameterType="com.zerobase.carrot_auction.model.ProductSearchForm"
     resultType="com.zerobase.carrot_auction.repository.entity.Product" resultMap="productSelectRM">
     select *
@@ -66,11 +47,10 @@
     where 1 = 1
     <include refid="selectListWhere"/>
     order by create_at desc
-    limit #{pageStart}, #{pageEnd}
   </select>
 
-  <select id="selectUser" resultMap="users">
-    select *
+  <select id="selectUser" resultType="String">
+    select nickname
     from users
     WHERE id = #{0}
   </select>

@@ -1,23 +1,22 @@
 package com.zerobase.carrot_auction.service;
 
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.zerobase.carrot_auction.Exception.ErrorCode;
+import com.zerobase.carrot_auction.Exception.PagingException;
 import com.zerobase.carrot_auction.Exception.ProductException;
 import com.zerobase.carrot_auction.dto.ProductDto;
 import com.zerobase.carrot_auction.mapper.ProductMapper;
 import com.zerobase.carrot_auction.model.ProductForm;
-import com.zerobase.carrot_auction.model.ProductListResponse;
 import com.zerobase.carrot_auction.model.ProductSearchForm;
 import com.zerobase.carrot_auction.model.Status;
 import com.zerobase.carrot_auction.repository.ProductRepository;
 import com.zerobase.carrot_auction.repository.UserRepository;
 import com.zerobase.carrot_auction.repository.entity.Product;
 import com.zerobase.carrot_auction.repository.entity.UserEntity;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -56,17 +55,14 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public ProductListResponse productList(ProductSearchForm productSearchForm) {
-		long totalCount = productMapper.selectListCount(productSearchForm);
-
-		List<Product> list = productMapper.selectList(productSearchForm);
-		ArrayList<ProductDto> productDtos = new ArrayList<>();
-		if (!CollectionUtils.isEmpty(list)) {
-			for (Product product : list) {
-				ProductDto productDto = ProductDto.of(product);
-				productDtos.add(productDto);
-			}
+	public Page<ProductDto> productList(ProductSearchForm productSearchForm) {
+		if (productSearchForm.getPageNum() <= 0) {
+			throw new PagingException(ErrorCode.INVALID_PAGE_INFO);
+		} else if (productSearchForm.getPageSize() <= 0) {
+			throw new PagingException(ErrorCode.INVALID_PAGE_INFO);
 		}
-		return new ProductListResponse(productDtos, totalCount);
+		PageHelper.startPage(productSearchForm);
+
+		return productMapper.selectList(productSearchForm);
 	}
 }

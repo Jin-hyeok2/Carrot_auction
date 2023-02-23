@@ -1,8 +1,10 @@
 package com.zerobase.carrot_auction.controller;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
+import com.zerobase.carrot_auction.dto.ProductDto;
 import com.zerobase.carrot_auction.dto.Response;
 import com.zerobase.carrot_auction.model.ProductForm;
-import com.zerobase.carrot_auction.model.ProductListResponse;
 import com.zerobase.carrot_auction.model.ProductSearchForm;
 import com.zerobase.carrot_auction.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +22,10 @@ public class ProductController {
 
 	private final ProductService productService;
 
-
 	@GetMapping("")
 	public ResponseEntity<Response> list(ProductSearchForm productSearchForm) {
-		ProductListResponse productListResponse = productService.productList(productSearchForm);
-		return ResponseEntity.ok(new Response("success", productListResponse.getProductList()));
+		Page<ProductDto> productDtos = productService.productList(productSearchForm);
+		return ResponseEntity.ok(new Response("success", PageInfo.of(productDtos)));
 	}
 
 	@PostMapping("/create")
