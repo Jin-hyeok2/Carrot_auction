@@ -1,4 +1,4 @@
-package com.zerobase.carrot_auction.Exception;
+package com.zerobase.carrot_auction.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,9 @@ public enum ErrorCode {
 	NOT_ENTER_REGION(HttpStatus.BAD_REQUEST, "지역을 입력하지 않았습니다"),
 	NEGATIVE_PRICE(HttpStatus.BAD_REQUEST, "가격이 0이하일 수 없습니다."),
 	NEGATIVE_END_PERIOD(HttpStatus.BAD_REQUEST, "기간이 0이하일 수 없습니다."),
-	NOT_FOUND_USER(HttpStatus.BAD_REQUEST, "유저를 찾을 수 없습니다.");
+	NOT_FOUND_USER(HttpStatus.BAD_REQUEST, "유저를 찾을 수 없습니다."),
+	NOT_FOUND_PRODUCT(HttpStatus.BAD_REQUEST, "거래글을 찾을 수 없습니다."),
+	NOT_FOUND_DEAL(HttpStatus.BAD_REQUEST, "거래 정보를 찾을 수 없습니다.");
 	private final HttpStatus httpStatus;
 	private final String detail;
 }
