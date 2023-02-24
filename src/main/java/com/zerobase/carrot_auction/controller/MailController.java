@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.*;
 public class MailController {
     private final MailServiceImpl mailService;
 
-    @PutMapping
+    @GetMapping
     public ResponseEntity<?> sendMail(@RequestBody Mail.Request.SendMail request) throws Exception {
+        mailService.sendMessage(request.getId());
         return ResponseEntity.ok(new Response("success", null));
     }
 }

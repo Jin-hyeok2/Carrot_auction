@@ -39,18 +39,25 @@ public class UserController {
     public ResponseEntity<?> signIn(@RequestBody User.Request.SignIn request) {
 		User.Response.SignIn data = new User.Response.SignIn();
 		UserEntity user = userService.signIn(request);
-		log.info(user.toString());
+//		log.info(user.toString());
 		data.setToken(tokenProvider.generateToken(user.getEmail(), user.getRoles()));
         return ResponseEntity.ok(new Response("success", data));
     }
 
-	public ResponseEntity<?> getInfo(@RequestHeader String token) {
-		return null;
+	@GetMapping("/getInfo")
+	public ResponseEntity<?> getInfo(@RequestHeader(name = "Authorization") String token) {
+		String userEmail = tokenProvider.getEmail(token.substring("Bearer ".length()));
+		User.Response.GetInfo data = new User.Response.GetInfo(userService.getInfo(userEmail));
+
+		return ResponseEntity.ok(new Response("success", data));
 	}
 
-	public ResponseEntity<?> editInfo(@RequestHeader String token,
+	@PutMapping("/editInfo")
+	public ResponseEntity<?> editInfo(@RequestHeader(name = "Authorization") String token,
 		@RequestBody User.Request.EditInfo request) {
-		return null;
+		String userEmail = tokenProvider.getEmail(token.substring("Bearer ".length()));
+		User.Response.GetInfo data = new User.Response.GetInfo(userService.editInfo(userEmail, request));
+		return ResponseEntity.ok(new Response("success", data));
 	}
 
 	public ResponseEntity<?> signOut() {

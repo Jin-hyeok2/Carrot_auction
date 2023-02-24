@@ -13,6 +13,8 @@ public class User {
 
         @Data
         @Builder
+        @NoArgsConstructor
+        @AllArgsConstructor
         public static class SignUp {
 
             private String email;
@@ -49,23 +51,6 @@ public class User {
             private String password;
         }
 
-        @Data
-        @Builder
-        public static class GetInfo {
-
-            private String email;
-            private String nickname;
-            private String phone;
-
-            public GetInfo entityToDto(UserEntity userEntity) {
-                return GetInfo.builder()
-                        .email(userEntity.getEmail())
-                        .nickname(userEntity.getNickname())
-                        .phone(userEntity.getPhone())
-                        .build();
-            }
-
-        }
 
         @Getter
         @RequiredArgsConstructor
@@ -110,6 +95,21 @@ public class User {
         @Data
         public static class SignIn {
             private String Token;
+        }
+
+        @Data
+        public static class GetInfo {
+            private String email;
+            private String nickname;
+            private String phone;
+            private float temperature;
+
+            public GetInfo(UserEntity userEntity) {
+                this.email = userEntity.getEmail();
+                this.nickname = userEntity.getNickname();
+                this.phone = userEntity.getPhone();
+                this.temperature = userEntity.getTemperature();
+            }
         }
     }
 }

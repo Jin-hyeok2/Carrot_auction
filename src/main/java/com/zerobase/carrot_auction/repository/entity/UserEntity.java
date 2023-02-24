@@ -45,7 +45,7 @@ public class UserEntity implements UserDetails {
 	/**
 	 * 일대다 관계
 	 */
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private List<RoleEntity> roles = new ArrayList<>();
 
 	@CreatedDate
