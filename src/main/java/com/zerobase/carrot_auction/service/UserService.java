@@ -107,28 +107,31 @@ public class UserService implements UserDetailsService {
     public UserEntity editInfo(String userEmail, User.Request.EditInfo request) {
         UserEntity user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다"));
+        log.info(request.toString());
         if (!passwordEncoder.matches(request.getCurPassword(), user.getPassword())) {
             throw new RuntimeException("비밀번호가 일치하지 않습니다");
         }
-        if (request.getPassword().isEmpty() && request.getNickname().isEmpty() && request.getPhone().isEmpty()) {
-            throw new RuntimeException("변경 요청 자료가 없습니다");
-        } else {
-            if (!request.getPassword().isEmpty()) {
-                if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-                    throw new RuntimeException("변경 전 비밀번호와 변경 비밀번호가 같습니다");
-                }
-                user.setPassword(passwordEncoder.encode(request.getPassword()));
-            } else if (!request.getNickname().isEmpty()) {
-                if (userRepository.existsByNickname(request.getNickname())) {
-                    throw new RuntimeException("이미 가입된 닉네임이 있습니다");
-                }
-                user.setNickname(request.getNickname());
-            } else {
-                if (userRepository.existsByPhone(request.getPhone())) {
-                    throw new RuntimeException("이미 가입된 번호가 있습니다");
-                }
-                user.setPhone(request.getPhone());
+
+        if (request.getPassword() != null) {
+            log.info("비밀번호 변경 요청");
+            if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+                throw new RuntimeException("변경 전 비밀번호와 변경 비밀번호가 같습니다");
             }
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        } else if (request.getNickname() != null) {
+            log.info("닉네임 변경 요청");
+            if (userRepository.existsByNickname(request.getNickname())) {
+                throw new RuntimeException("이미 가입된 닉네임이 있습니다");
+            }
+            user.setNickname(request.getNickname());
+        } else if (request.getPhone() != null) {
+            log.info("연락처 변경 요청");
+            if (userRepository.existsByPhone(request.getPhone())) {
+                throw new RuntimeException("이미 가입된 번호가 있습니다");
+            }
+            user.setPhone(request.getPhone());
+        } else {
+            throw new RuntimeException("변경 요청 자료가 없습니다");
         }
         user = userRepository.save(user);
 

@@ -93,7 +93,7 @@ public class User {
         }
 
         @Data
-        public static class SignIn {
+        public static class TokenResponse {
             private String Token;
         }
 

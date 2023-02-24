@@ -37,7 +37,7 @@ public class UserController {
 
 	@PostMapping("/signin")
     public ResponseEntity<?> signIn(@RequestBody User.Request.SignIn request) {
-		User.Response.SignIn data = new User.Response.SignIn();
+		User.Response.TokenResponse data = new User.Response.TokenResponse();
 		UserEntity user = userService.signIn(request);
 //		log.info(user.toString());
 		data.setToken(tokenProvider.generateToken(user.getEmail(), user.getRoles()));
