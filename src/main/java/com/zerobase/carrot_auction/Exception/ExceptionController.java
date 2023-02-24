@@ -1,4 +1,4 @@
-package com.zerobase.carrot_auction.Exception;
+package com.zerobase.carrot_auction.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
