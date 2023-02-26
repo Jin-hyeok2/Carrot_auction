@@ -28,7 +28,7 @@ public class ProductController {
 		return ResponseEntity.ok(new Response("success", PageInfo.of(productDtos)));
 	}
 
-	@GetMapping("/{productId}")
+	@GetMapping("/detail")
 	public ResponseEntity<Response> detail(ProductSearchForm productSearchForm) {
 		ProductDto detail = productService.productDetail(productSearchForm.getProductId());
 		return ResponseEntity.ok(new Response("success", detail));
