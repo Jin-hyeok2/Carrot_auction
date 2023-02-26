@@ -28,6 +28,12 @@ public class ProductController {
 		return ResponseEntity.ok(new Response("success", PageInfo.of(productDtos)));
 	}
 
+	@GetMapping("/{productId}")
+	public ResponseEntity<Response> detail(ProductSearchForm productSearchForm) {
+		ProductDto detail = productService.productDetail(productSearchForm.getProductId());
+		return ResponseEntity.ok(new Response("success", detail));
+	}
+
 	@PostMapping("/create")
 	public ResponseEntity<Response> create(Long sellerId, @RequestBody ProductForm productForm) {
 		ProductForm product = productService.create(sellerId, productForm);

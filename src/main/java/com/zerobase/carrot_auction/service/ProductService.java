@@ -10,4 +10,6 @@ public interface ProductService {
 	ProductForm create(Long sellerId, ProductForm parameter);
 
 	Page<ProductDto> productList(ProductSearchForm productSearchForm);
+
+	ProductDto productDetail(Long id);
 }

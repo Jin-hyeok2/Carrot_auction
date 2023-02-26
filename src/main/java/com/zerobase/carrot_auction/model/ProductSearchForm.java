@@ -14,5 +14,6 @@ public class ProductSearchForm extends CommonParam {
 	private Boolean auctionYn;
 	private String siDo;
 	private String guGun;
+	private Long productId;
 
 }

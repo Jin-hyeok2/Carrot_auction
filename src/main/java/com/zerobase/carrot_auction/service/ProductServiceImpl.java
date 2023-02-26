@@ -3,10 +3,10 @@ package com.zerobase.carrot_auction.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.zerobase.carrot_auction.dto.ProductDto;
 import com.zerobase.carrot_auction.exception.ErrorCode;
 import com.zerobase.carrot_auction.exception.PagingException;
 import com.zerobase.carrot_auction.exception.ProductException;
-import com.zerobase.carrot_auction.dto.ProductDto;
 import com.zerobase.carrot_auction.mapper.ProductMapper;
 import com.zerobase.carrot_auction.model.ProductForm;
 import com.zerobase.carrot_auction.model.ProductSearchForm;
@@ -64,5 +64,15 @@ public class ProductServiceImpl implements ProductService {
 		PageHelper.startPage(productSearchForm);
 
 		return productMapper.selectList(productSearchForm);
+	}
+
+	@Override
+	public ProductDto productDetail(Long id) {
+		Product product = productRepository.findById(id)
+			.orElseThrow(() -> new ProductException(ErrorCode.NOT_FOUND_PRODUCT));
+		if (product.getStatus() == Status.삭제됨) {
+			throw new ProductException(ErrorCode.DELETE_PRODUCT);
+		}
+		return ProductDto.of(product);
 	}
 }
