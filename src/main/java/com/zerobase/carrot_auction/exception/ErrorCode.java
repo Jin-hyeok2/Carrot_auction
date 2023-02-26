@@ -14,6 +14,10 @@ public enum ErrorCode {
 	NOT_FOUND_PRODUCT(HttpStatus.NOT_FOUND, "거래글을 찾을 수 없습니다."),
 	NOT_FOUND_DEAL(HttpStatus.NOT_FOUND, "거래 정보를 찾을 수 없습니다."),
 	NOT_FOUND_USER(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다."),
+	INVALID_USER(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다."),
+	INVALID_PRICE(HttpStatus.NOT_FOUND, "입력한 가격이 입찰가보다 낮습니다"),
+	INVALID_PRODUCT_STATUS(HttpStatus.NOT_FOUND, "판매중인 거래만 종료할 수 있습니다."),
+	INVALID_PAGE_INFO(HttpStatus.BAD_REQUEST, "요청 정보 확인이 필요합니다."),
 	INVALID_PAGE_INFO(HttpStatus.BAD_REQUEST, "요청 정보 확인이 필요합니다."),
 	DELETE_PRODUCT(HttpStatus.BAD_REQUEST, "삭제된 거래글입니다.");
 	private final HttpStatus httpStatus;

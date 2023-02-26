@@ -3,10 +3,10 @@ package com.zerobase.carrot_auction.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.zerobase.carrot_auction.dto.ProductDto;
 import com.zerobase.carrot_auction.exception.ErrorCode;
 import com.zerobase.carrot_auction.exception.PagingException;
 import com.zerobase.carrot_auction.exception.ProductException;
+import com.zerobase.carrot_auction.dto.ProductDto;
 import com.zerobase.carrot_auction.mapper.ProductMapper;
 import com.zerobase.carrot_auction.model.ProductForm;
 import com.zerobase.carrot_auction.model.ProductSearchForm;
@@ -16,7 +16,11 @@ import com.zerobase.carrot_auction.repository.UserRepository;
 import com.zerobase.carrot_auction.repository.entity.Product;
 import com.zerobase.carrot_auction.repository.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -64,6 +68,18 @@ public class ProductServiceImpl implements ProductService {
 		PageHelper.startPage(productSearchForm);
 
 		return productMapper.selectList(productSearchForm);
+	}
+	@Scheduled(cron = "0 0 0 * * *")
+	public void updateProductStatus() {
+		List<Product> products = productRepository.findByStatusNot(Status.거래종료);
+		LocalDateTime now = LocalDateTime.now();
+		for (Product product : products) {
+			LocalDateTime endAt = product.getCreateAt().plusDays(product.getEndPeriod()).withHour(0).withMinute(0).withSecond(0);
+			if (now.isAfter(endAt)) {
+				product.setStatus(Status.거래종료);
+				productRepository.save(product);
+			}
+		}
 	}
 
 	@Override

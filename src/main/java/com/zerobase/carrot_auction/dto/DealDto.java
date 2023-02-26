@@ -6,6 +6,8 @@ import com.zerobase.carrot_auction.repository.entity.DealEntity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 public class DealDto {
@@ -14,11 +16,13 @@ public class DealDto {
     private Long customerId;
     private int price;
 
-    public DealDto(Long id, Long productId, Long customerId, int price) {
+    private LocalDateTime createAt;
+    public DealDto(Long id, Long productId, Long customerId, int price, LocalDateTime createAt) {
         this.id = id;
         this.productId = productId;
         this.customerId = customerId;
         this.price = price;
+        this.createAt=createAt;
     }
     public static DealDto fromEntity(DealEntity entity) {
         if (entity == null) {
@@ -28,7 +32,8 @@ public class DealDto {
                 entity.getId(),
                 entity.getProduct().getId(),
                 entity.getCustomer().getId(),
-                entity.getPrice()
+                entity.getPrice(),
+                entity.getCreateAt()
         );
     }
 }

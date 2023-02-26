@@ -3,6 +3,7 @@ package com.zerobase.carrot_auction.service;
 import com.zerobase.carrot_auction.dto.DealDto;
 import com.zerobase.carrot_auction.exception.DealException;
 import com.zerobase.carrot_auction.exception.ErrorCode;
+import com.zerobase.carrot_auction.model.Status;
 import com.zerobase.carrot_auction.repository.DealRepository;
 import com.zerobase.carrot_auction.repository.ProductRepository;
 import com.zerobase.carrot_auction.repository.UserRepository;
@@ -36,9 +37,19 @@ public class DealService {
         DealEntity dealEntity = new DealEntity();
         dealEntity.setProduct(product);
         dealEntity.setCustomer(customer);
-        dealEntity.setPrice(dealDto.getPrice());
+
+        if (product.isAuction()) { // 경매거래인 경우
+            if (dealDto.getPrice() < product.getPrice()) {
+                throw new DealException(ErrorCode.INVALID_PRICE);
+            }
+            dealEntity.setPrice(dealDto.getPrice());
+            product.setPrice(dealDto.getPrice());
+        } else {
+            dealEntity.setPrice(product.getPrice());
+        }
 
         DealEntity savedDeal = dealRepository.save(dealEntity);
+        productRepository.save(product);
 
         return DealDto.fromEntity(savedDeal);
     }
@@ -59,5 +70,26 @@ public class DealService {
 
     public void deleteDeal(Long dealId) {
         dealRepository.deleteById(dealId);
+    }
+
+    public void completeDeal(Long dealId, Long sellerId) {
+        DealEntity deal = dealRepository.findById(dealId)
+                .orElseThrow(() -> new DealException(ErrorCode.NOT_FOUND_DEAL));
+        Product product = deal.getProduct();
+
+        // 거래가 판매 중인 상태인지 확인
+        if (product.getStatus() != Status.판매중) {
+            throw new DealException(ErrorCode.INVALID_PRODUCT_STATUS);
+        }
+
+        // 거래의 판매자가 맞는지 확인
+        if (!deal.getProduct().getSeller().getId().equals(sellerId)) {
+            throw new DealException(ErrorCode.INVALID_USER);
+        }
+
+        product.setStatus(Status.거래종료);
+        product.setCustomer(deal.getCustomer());
+        dealRepository.save(deal);
+        productRepository.save(product);
     }
 }
