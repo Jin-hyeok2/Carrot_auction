@@ -1,7 +1,7 @@
 package com.zerobase.carrot_auction.repository.entity;
 
 import com.sun.istack.NotNull;
-import com.zerobase.carrot_auction.model.status;
+import com.zerobase.carrot_auction.model.Status;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -24,6 +25,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
 @EntityListeners(AuditingEntityListener.class)
 public class Product {
 
@@ -40,7 +42,7 @@ public class Product {
 	private boolean isAuction;
 	@NotNull
 	@Enumerated(value = EnumType.STRING)
-	private status status;
+	private Status status;
 	private String title;
 	private String siDo;
 	private String guGun;
@@ -50,5 +52,14 @@ public class Product {
 	@CreatedDate
 	private LocalDateTime createAt;
 
+	public String getSellerNickName() {
+		return seller.getNickname();
+	}
 
+	public String getCustomerNickName() {
+		if (customer != null) {
+			return customer.getNickname();
+		}
+		return null;
+	}
 }

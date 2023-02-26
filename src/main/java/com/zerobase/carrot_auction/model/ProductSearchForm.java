@@ -1,19 +1,18 @@
 package com.zerobase.carrot_auction.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductForm {
+@Builder
+public class ProductSearchForm extends CommonParam {
 
-	private String title;
-	private boolean auctionYn;
+	private Boolean auctionYn;
 	private String siDo;
 	private String guGun;
-	private int price;
-	private String description;
-	private int endPeriod;
+
 }
