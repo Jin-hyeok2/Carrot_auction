@@ -3,11 +3,11 @@ package com.zerobase.carrot_auction.Exception;
 import lombok.Getter;
 
 @Getter
-public class UserException extends RuntimeException {
+public class PagingException extends RuntimeException {
 
 	private final ErrorCode errorCode;
 
-	public UserException(ErrorCode errorCode) {
+	public PagingException(ErrorCode errorCode) {
 		super(errorCode.getDetail());
 		this.errorCode = errorCode;
 	}
