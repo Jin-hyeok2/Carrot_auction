@@ -1,11 +1,15 @@
 package com.zerobase.carrot_auction.security;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -28,12 +32,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 		throws ServletException, IOException {
 		String token = this.resolveTokenFromRequest(request);
 
-		if (StringUtils.hasText(token) && this.tokenProvider.verifyToken(token)) {
-			Authentication auth = this.tokenProvider.getAuthentication(token);
-			SecurityContextHolder.getContext().setAuthentication(auth);
-		}
+		try{
+			if (StringUtils.hasText(token) && this.tokenProvider.verifyToken(token)) {
+				Authentication auth = this.tokenProvider.getAuthentication(token);
+				SecurityContextHolder.getContext().setAuthentication(auth);
+			}
 
-		filterChain.doFilter(request, response);
+			filterChain.doFilter(request, response);
+		} catch (Exception e) {
+
+		}
 	}
 
 	private String resolveTokenFromRequest(HttpServletRequest request) {
@@ -44,5 +52,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 		}
 
 		return null;
+	}
+
+	private void setErrorResponse(HttpStatus status, HttpServletResponse response, Throwable e) throws IOException{
+		response.setStatus(status.value());
+		response.setContentType("application/json; charset=UTF-8");
+
 	}
 }
