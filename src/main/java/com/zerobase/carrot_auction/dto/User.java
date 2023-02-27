@@ -13,6 +13,8 @@ public class User {
 
         @Data
         @Builder
+        @NoArgsConstructor
+        @AllArgsConstructor
         public static class SignUp {
 
             private String email;
@@ -23,15 +25,20 @@ public class User {
 
 
             public UserEntity dtoToEntity() {
-                return UserEntity.builder()
+                UserEntity user = UserEntity.builder()
                         .email(this.email)
                         .password(this.password)
                         .nickname(this.nickname)
                         .phone(this.phone)
                         .isAuth(false)
-                        .authCode("")
                         .temperature(0)
                         .build();
+
+                user.setRoles(this.roles
+                        .stream()
+                        .map(role -> new RoleEntity(role, user))
+                        .collect(Collectors.toList()));
+                return user;
             }
         }
 
@@ -44,23 +51,6 @@ public class User {
             private String password;
         }
 
-        @Data
-        @Builder
-        public static class GetInfo {
-
-            private String email;
-            private String nickname;
-            private String phone;
-
-            public GetInfo entityToDto(UserEntity userEntity) {
-                return GetInfo.builder()
-                        .email(userEntity.getEmail())
-                        .nickname(userEntity.getNickname())
-                        .phone(userEntity.getPhone())
-                        .build();
-            }
-
-        }
 
         @Getter
         @RequiredArgsConstructor
@@ -90,17 +80,36 @@ public class User {
             private String phone;
             private List<String> roles;
 
-            public Signup(UserEntity userEntity, List<RoleEntity> roleEntity) {
+            public Signup(UserEntity userEntity) {
                 this.id = userEntity.getId();
                 this.email = userEntity.getEmail();
                 this.nickname = userEntity.getNickname();
                 this.phone = userEntity.getPhone();
-                this.roles = roleEntity
+                this.roles = userEntity.getRoles()
                         .stream()
                         .map(RoleEntity::getRoleName)
                         .collect(Collectors.toList());
             }
         }
-    }
 
+        @Data
+        public static class TokenResponse {
+            private String Token;
+        }
+
+        @Data
+        public static class GetInfo {
+            private String email;
+            private String nickname;
+            private String phone;
+            private float temperature;
+
+            public GetInfo(UserEntity userEntity) {
+                this.email = userEntity.getEmail();
+                this.nickname = userEntity.getNickname();
+                this.phone = userEntity.getPhone();
+                this.temperature = userEntity.getTemperature();
+            }
+        }
+    }
 }

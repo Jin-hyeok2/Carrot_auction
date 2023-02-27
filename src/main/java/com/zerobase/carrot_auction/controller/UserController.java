@@ -2,6 +2,8 @@ package com.zerobase.carrot_auction.controller;
 
 import com.zerobase.carrot_auction.dto.Response;
 import com.zerobase.carrot_auction.dto.User;
+import com.zerobase.carrot_auction.repository.entity.UserEntity;
+import com.zerobase.carrot_auction.security.TokenProvider;
 import com.zerobase.carrot_auction.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,13 +17,15 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
 	private final UserService userService;
+	private final TokenProvider tokenProvider;
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> signUp(@RequestBody User.Request.SignUp request) {
-		User.Response.Signup user = userService.signUp(request);
-		log.info(user.toString());
+		UserEntity user = userService.signUp(request);
+//		log.info(user.toString());
+		User.Response.Signup data = new User.Response.Signup(user);
 
-		return ResponseEntity.ok(new Response("success", user));
+		return ResponseEntity.ok(new Response("success", data));
 	}
 
     @PutMapping("/verify")
@@ -31,17 +35,29 @@ public class UserController {
         return ResponseEntity.ok(new Response("success", null));
     }
 
+	@PostMapping("/signin")
     public ResponseEntity<?> signIn(@RequestBody User.Request.SignIn request) {
-        return null;
+		User.Response.TokenResponse data = new User.Response.TokenResponse();
+		UserEntity user = userService.signIn(request);
+//		log.info(user.toString());
+		data.setToken(tokenProvider.generateToken(user.getEmail(), user.getRoles()));
+        return ResponseEntity.ok(new Response("success", data));
     }
 
-	public ResponseEntity<?> getInfo(@RequestHeader String token) {
-		return null;
+	@GetMapping("/getInfo")
+	public ResponseEntity<?> getInfo(@RequestHeader(name = "Authorization") String token) {
+		String userEmail = tokenProvider.getEmail(token.substring("Bearer ".length()));
+		User.Response.GetInfo data = new User.Response.GetInfo(userService.getInfo(userEmail));
+
+		return ResponseEntity.ok(new Response("success", data));
 	}
 
-	public ResponseEntity<?> editInfo(@RequestHeader String token,
+	@PutMapping("/editInfo")
+	public ResponseEntity<?> editInfo(@RequestHeader(name = "Authorization") String token,
 		@RequestBody User.Request.EditInfo request) {
-		return null;
+		String userEmail = tokenProvider.getEmail(token.substring("Bearer ".length()));
+		User.Response.GetInfo data = new User.Response.GetInfo(userService.editInfo(userEmail, request));
+		return ResponseEntity.ok(new Response("success", data));
 	}
 
 	public ResponseEntity<?> signOut() {
