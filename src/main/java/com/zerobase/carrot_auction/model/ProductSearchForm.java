@@ -1,5 +1,6 @@
 package com.zerobase.carrot_auction.model;
 
+import com.zerobase.carrot_auction.repository.entity.code.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,5 +16,6 @@ public class ProductSearchForm extends CommonParam {
 	private String siDo;
 	private String guGun;
 	private Long productId;
+	final private Status status = Status.DEL;
 
 }

@@ -20,38 +20,39 @@
 
   <sql id="selectListWhere">
     <if test="searchWord != null">
-      AND title like concat('%', #{searchWord}, '%')
+      AND title LIKE CONCAT('%', #{searchWord}, '%')
     </if>
     <if test="siDo != null">
-      AND si_do like concat('%', #{siDo}, '%')
+      AND si_do LIKE CONCAT('%', #{siDo}, '%')
       <if test="guGun != null">
-        AND gu_gun like concat('%', #{guGun}, '%')
+        AND gu_gun LIKE CONCAT('%', #{guGun}, '%')
       </if>
     </if>
     <if test="auctionYn != null ">
       <choose>
         <when test="auctionYn = 1">
-          AND is_auction = 1
+          AND auction_yn = 1
         </when>
         <otherwise>
-          AND is_auction = 0;
+          AND auction_yn = 0
         </otherwise>
       </choose>
     </if>
+    AND status != 'DEL'
   </sql>
 
   <select id="selectList" parameterType="com.zerobase.carrot_auction.model.ProductSearchForm"
     resultType="com.zerobase.carrot_auction.repository.entity.Product" resultMap="productSelectRM">
-    select *
-    from product
-    where 1 = 1
+    SELECT *
+    FROM product
+    WHERE 1 = 1
     <include refid="selectListWhere"/>
-    order by create_at desc
+    ORDER BY create_at DESC
   </select>
 
   <select id="selectUser" resultType="String">
-    select nickname
-    from users
+    SELECT nickname
+    FROM users
     WHERE id = #{0}
   </select>
 </mapper>
