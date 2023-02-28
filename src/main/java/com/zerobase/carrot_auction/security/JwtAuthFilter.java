@@ -1,13 +1,10 @@
 package com.zerobase.carrot_auction.security;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -32,16 +29,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 		throws ServletException, IOException {
 		String token = this.resolveTokenFromRequest(request);
 
-		try{
-			if (StringUtils.hasText(token) && this.tokenProvider.verifyToken(token)) {
-				Authentication auth = this.tokenProvider.getAuthentication(token);
-				SecurityContextHolder.getContext().setAuthentication(auth);
-			}
-
-			filterChain.doFilter(request, response);
-		} catch (Exception e) {
-
+		if (StringUtils.hasText(token) && this.tokenProvider.verifyToken(token)) {
+			Authentication auth = this.tokenProvider.getAuthentication(token);
+			SecurityContextHolder.getContext().setAuthentication(auth);
 		}
+
+		filterChain.doFilter(request, response);
+
 	}
 
 	private String resolveTokenFromRequest(HttpServletRequest request) {
