@@ -2,7 +2,7 @@ package com.zerobase.carrot_auction.controller;
 
 import com.zerobase.carrot_auction.dto.Mail;
 import com.zerobase.carrot_auction.dto.Response;
-import com.zerobase.carrot_auction.service.MailServiceImpl;
+import com.zerobase.carrot_auction.service.ImpI.MailServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

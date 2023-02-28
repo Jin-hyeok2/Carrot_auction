@@ -3,13 +3,13 @@ package com.zerobase.carrot_auction.service;
 import com.zerobase.carrot_auction.dto.DealDto;
 import com.zerobase.carrot_auction.exception.DealException;
 import com.zerobase.carrot_auction.exception.ErrorCode;
-import com.zerobase.carrot_auction.model.Status;
 import com.zerobase.carrot_auction.repository.DealRepository;
 import com.zerobase.carrot_auction.repository.ProductRepository;
 import com.zerobase.carrot_auction.repository.UserRepository;
 import com.zerobase.carrot_auction.repository.entity.DealEntity;
 import com.zerobase.carrot_auction.repository.entity.Product;
 import com.zerobase.carrot_auction.repository.entity.UserEntity;
+import com.zerobase.carrot_auction.repository.entity.code.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +38,7 @@ public class DealService {
         dealEntity.setProduct(product);
         dealEntity.setCustomer(customer);
 
-        if (product.isAuction()) { // 경매거래인 경우
+        if (product.isAuctionYn()) { // 경매거래인 경우
             if (dealDto.getPrice() < product.getPrice()) {
                 throw new DealException(ErrorCode.INVALID_PRICE);
             }
@@ -78,7 +78,7 @@ public class DealService {
         Product product = deal.getProduct();
 
         // 거래가 판매 중인 상태인지 확인
-        if (product.getStatus() != Status.판매중) {
+        if (product.getStatus() != Status.SALE) {
             throw new DealException(ErrorCode.INVALID_PRODUCT_STATUS);
         }
 
@@ -87,7 +87,7 @@ public class DealService {
             throw new DealException(ErrorCode.INVALID_USER);
         }
 
-        product.setStatus(Status.거래종료);
+        product.setStatus(Status.CLOSE);
         product.setCustomer(deal.getCustomer());
         dealRepository.save(deal);
         productRepository.save(product);
