@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductSearchForm extends CommonParam {
-
+public class ProductSearchForm extends CommonPageParam {
+	private String searchWord;
 	private Boolean auctionYn;
 	private String siDo;
 	private String guGun;

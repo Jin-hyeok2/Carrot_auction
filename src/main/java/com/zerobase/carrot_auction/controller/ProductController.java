@@ -7,10 +7,13 @@ import com.zerobase.carrot_auction.dto.Response;
 import com.zerobase.carrot_auction.model.ProductForm;
 import com.zerobase.carrot_auction.model.ProductSearchForm;
 import com.zerobase.carrot_auction.service.ProductService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import java.security.Principal;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,15 +21,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@Api(tags = {"거래글 API"})
+@RestController
 @RequiredArgsConstructor
-@Controller
 @RequestMapping("/product")
 public class ProductController {
 
 	private final ProductService productService;
 
 	@GetMapping("")
+	@ApiOperation(value = "거래글 조회")
 	public ResponseEntity<Response> list(ProductSearchForm productSearchForm) {
 		Page<ProductDto> productDtos = productService.productList(productSearchForm);
 
@@ -34,12 +40,14 @@ public class ProductController {
 	}
 
 	@GetMapping("{id}/detail")
+	@ApiOperation(value = "거래글 상세보기")
 	public ResponseEntity<Response> detail(@PathVariable(name = "id") Long productId) {
 		ProductDto detail = productService.productDetail(productId);
 		return ResponseEntity.ok(new Response("success", detail));
 	}
 
 	@PostMapping("/create")
+	@ApiOperation(value = "거래글 작성")
 	public ResponseEntity<Response> create(final @Valid @RequestBody ProductForm productForm) {
 		ProductForm product = productService.create(productForm);
 
@@ -47,6 +55,7 @@ public class ProductController {
 	}
 
 	@DeleteMapping("{id}/delete")
+	@ApiOperation(value = "거래글 삭제")
 	public ResponseEntity<Response> delete(@RequestHeader(name = "Authorization") String token,
 		@PathVariable(name = "id") Long productId) {
 		productService.delete(token, productId);

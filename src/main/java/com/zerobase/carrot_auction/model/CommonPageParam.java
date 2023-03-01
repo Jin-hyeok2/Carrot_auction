@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommonParam {
-
-	long pageNum;
-	long pageSize;
-	private String searchWord;
+public class CommonPageParam {
+	private long pageNum =1;
+	private long pageSize = 10;
 }
