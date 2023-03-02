@@ -1,10 +1,15 @@
 package com.zerobase.carrot_auction.service;
 
+import com.zerobase.carrot_auction.dto.ProductDto;
 import com.zerobase.carrot_auction.dto.User;
+import com.zerobase.carrot_auction.repository.DealRepository;
+import com.zerobase.carrot_auction.repository.ProductRepository;
 import com.zerobase.carrot_auction.repository.UserRepository;
 import com.zerobase.carrot_auction.repository.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,6 +25,8 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DealRepository dealRepository;
+    private final ProductRepository productRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -136,5 +143,23 @@ public class UserService implements UserDetailsService {
         user = userRepository.save(user);
 
         return user;
+    }
+
+    public Page<ProductDto> getSalesListByEmail(String userEmail, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        UserEntity user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException(""));
+
+        return productRepository.findAllBySeller(pageRequest, user)
+                .map((ProductDto::of));
+    }
+
+    public Page<ProductDto> getPurchaseListByEmail(String userEmail, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        UserEntity user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException(""));
+
+        return productRepository.findAllBySeller(pageRequest, user)
+                .map((ProductDto::of));
     }
 }
