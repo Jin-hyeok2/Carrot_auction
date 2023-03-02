@@ -1,6 +1,5 @@
 package com.zerobase.carrot_auction.config;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
