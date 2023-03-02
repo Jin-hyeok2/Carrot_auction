@@ -8,7 +8,13 @@ import com.zerobase.carrot_auction.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -28,21 +34,21 @@ public class UserController {
 		return ResponseEntity.ok(new Response("success", data));
 	}
 
-    @PutMapping("/verify")
-    public ResponseEntity<?> verify(@RequestBody User.Request.VerifyMail request) {
-        userService.verifyMail(request);
+	@PutMapping("/verify")
+	public ResponseEntity<?> verify(@RequestBody User.Request.VerifyMail request) {
+		userService.verifyMail(request);
 
-        return ResponseEntity.ok(new Response("success", null));
-    }
+		return ResponseEntity.ok(new Response("success", null));
+	}
 
 	@PostMapping("/signin")
-    public ResponseEntity<?> signIn(@RequestBody User.Request.SignIn request) {
+	public ResponseEntity<?> signIn(@RequestBody User.Request.SignIn request) {
 		User.Response.TokenResponse data = new User.Response.TokenResponse();
 		UserEntity user = userService.signIn(request);
 //		log.info(user.toString());
 		data.setToken(tokenProvider.generateToken(user.getEmail(), user.getRoles()));
-        return ResponseEntity.ok(new Response("success", data));
-    }
+		return ResponseEntity.ok(new Response("success", data));
+	}
 
 	@GetMapping("/getInfo")
 	public ResponseEntity<?> getInfo(@RequestHeader(name = "Authorization") String token) {
@@ -56,7 +62,8 @@ public class UserController {
 	public ResponseEntity<?> editInfo(@RequestHeader(name = "Authorization") String token,
 		@RequestBody User.Request.EditInfo request) {
 		String userEmail = tokenProvider.getEmail(token.substring("Bearer ".length()));
-		User.Response.GetInfo data = new User.Response.GetInfo(userService.editInfo(userEmail, request));
+		User.Response.GetInfo data = new User.Response.GetInfo(
+			userService.editInfo(userEmail, request));
 		return ResponseEntity.ok(new Response("success", data));
 	}
 

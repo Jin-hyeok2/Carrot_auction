@@ -1,7 +1,7 @@
 package com.zerobase.carrot_auction.repository.entity;
 
 import com.sun.istack.NotNull;
-import com.zerobase.carrot_auction.model.Status;
+import com.zerobase.carrot_auction.repository.entity.code.Status;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -27,19 +27,19 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Builder
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-public class Product {
+public class ProductEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@ManyToOne
-	@JoinColumn(name = "customerId", nullable = true)
+	@JoinColumn(name = "customer_id", nullable = true)
 	private UserEntity customer;
 	@ManyToOne
-	@JoinColumn(name = "sellerId", nullable = false)
+	@JoinColumn(name = "seller_id", nullable = false)
 	private UserEntity seller;
 	@NotNull
-	private boolean isAuction;
+	private boolean auctionYn;
 	@NotNull
 	@Enumerated(value = EnumType.STRING)
 	private Status status;

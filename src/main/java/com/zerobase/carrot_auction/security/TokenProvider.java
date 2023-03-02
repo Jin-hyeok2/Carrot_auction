@@ -2,13 +2,16 @@ package com.zerobase.carrot_auction.security;
 
 import com.zerobase.carrot_auction.repository.entity.RoleEntity;
 import com.zerobase.carrot_auction.service.UserService;
-import io.jsonwebtoken.*;
-
-import java.security.Key;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +27,7 @@ import org.springframework.util.StringUtils;
 public class TokenProvider {
 
 	private static final long TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 2; //2시간 만료
-//	private static final long TOKEN_EXPIRE_TIME = 1000; //1초 만료
+	//	private static final long TOKEN_EXPIRE_TIME = 1000; //1초 만료
 	private static final String KEY_ROLES = "roles";
 
 	private final UserService userService;
@@ -35,8 +38,8 @@ public class TokenProvider {
 		Claims claims = Jwts.claims();
 		claims.setSubject(email);
 		claims.put(KEY_ROLES, roles
-				.stream().map(RoleEntity::getRoleName)
-				.collect(Collectors.toList()));
+			.stream().map(RoleEntity::getRoleName)
+			.collect(Collectors.toList()));
 
 		Date now = new Date();
 		Date expiredDate = new Date(now.getTime() + TOKEN_EXPIRE_TIME);
@@ -61,7 +64,7 @@ public class TokenProvider {
 	private Claims parseClaims(String token) {
 		try {
 			return Jwts.parser().setSigningKey(this.secretKey)
-					.parseClaimsJws(token).getBody();
+				.parseClaimsJws(token).getBody();
 		} catch (ExpiredJwtException e) {
 			log.info("Expired JWT token");
 			throw new JwtException("토큰 기한 만료");
