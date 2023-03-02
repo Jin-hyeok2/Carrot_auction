@@ -1,4 +1,4 @@
-package com.zerobase.carrot_auction.model;
+package com.zerobase.carrot_auction.dto.request;
 
 
 import javax.validation.constraints.NotBlank;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductForm {
+public class ProductCreateRequest {
 
 	Long sellerId;
 	@NotBlank(message = "제목을 입력해주세요.")

@@ -48,7 +48,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 		return null;
 	}
 
-	private void setErrorResponse(HttpStatus status, HttpServletResponse response, Throwable e) throws IOException{
+	private void setErrorResponse(HttpStatus status, HttpServletResponse response, Throwable e)
+		throws IOException {
 		response.setStatus(status.value());
 		response.setContentType("application/json; charset=UTF-8");
 

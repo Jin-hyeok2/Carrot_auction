@@ -1,6 +1,6 @@
-package com.zerobase.carrot_auction.dto;
+package com.zerobase.carrot_auction.dto.reponse;
 
-import com.zerobase.carrot_auction.repository.entity.Product;
+import com.zerobase.carrot_auction.repository.entity.ProductEntity;
 import com.zerobase.carrot_auction.repository.entity.code.Status;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -29,7 +29,7 @@ public class ProductDto {
 	private String customerNickname;
 	private String sellerNickname;
 
-	public static ProductDto of(Product product) {
+	public static ProductDto of(ProductEntity product) {
 		return ProductDto.builder()
 			.id(product.getId())
 			.customerNickname(product.getCustomerNickName())

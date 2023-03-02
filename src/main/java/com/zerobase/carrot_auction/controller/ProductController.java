@@ -2,15 +2,13 @@ package com.zerobase.carrot_auction.controller;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
-import com.zerobase.carrot_auction.dto.ProductDto;
 import com.zerobase.carrot_auction.dto.Response;
-import com.zerobase.carrot_auction.model.ProductForm;
-import com.zerobase.carrot_auction.model.ProductSearchForm;
+import com.zerobase.carrot_auction.dto.reponse.ProductDto;
+import com.zerobase.carrot_auction.dto.request.ProductCreateRequest;
+import com.zerobase.carrot_auction.dto.request.ProductSearchRequest;
 import com.zerobase.carrot_auction.service.ProductService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import java.security.Principal;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +31,7 @@ public class ProductController {
 
 	@GetMapping("")
 	@ApiOperation(value = "거래글 조회")
-	public ResponseEntity<Response> list(ProductSearchForm productSearchForm) {
+	public ResponseEntity<Response> list(ProductSearchRequest productSearchForm) {
 		Page<ProductDto> productDtos = productService.productList(productSearchForm);
 
 		return ResponseEntity.ok(new Response("success", PageInfo.of(productDtos)));
@@ -48,8 +46,9 @@ public class ProductController {
 
 	@PostMapping("/create")
 	@ApiOperation(value = "거래글 작성")
-	public ResponseEntity<Response> create(final @Valid @RequestBody ProductForm productForm) {
-		ProductForm product = productService.create(productForm);
+	public ResponseEntity<Response> create(
+		final @Valid @RequestBody ProductCreateRequest productForm) {
+		ProductCreateRequest product = productService.create(productForm);
 
 		return ResponseEntity.ok(new Response("success", "거래글이 등록되었습니다."));
 	}

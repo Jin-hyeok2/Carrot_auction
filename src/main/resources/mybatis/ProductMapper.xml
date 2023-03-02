@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zerobase.carrot_auction.mapper.ProductMapper">
-  <resultMap id="productSelectRM" type="com.zerobase.carrot_auction.dto.ProductDto">
+  <resultMap id="productSelectRM" type="com.zerobase.carrot_auction.dto.reponse.ProductDto">
     <id property="id" column="id"/>
     <result property="createAt" column="create_at"/>
     <result property="description" column="description"/>
@@ -41,8 +41,10 @@
     AND status != 'DEL'
   </sql>
 
-  <select id="selectList" parameterType="com.zerobase.carrot_auction.model.ProductSearchForm"
-    resultType="com.zerobase.carrot_auction.repository.entity.Product" resultMap="productSelectRM">
+  <select id="selectList"
+    parameterType="com.zerobase.carrot_auction.dto.request.ProductSearchRequest"
+    resultType="com.zerobase.carrot_auction.repository.entity.ProductEntity"
+    resultMap="productSelectRM">
     SELECT *
     FROM product
     WHERE 1 = 1

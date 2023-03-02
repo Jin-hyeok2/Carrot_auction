@@ -1,6 +1,7 @@
 package com.zerobase.carrot_auction.config;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,8 +29,8 @@ public class SwaggerConfig {
 			.apis(RequestHandlerSelectors.basePackage("com.zerobase.carrot_auction"))
 			.paths(PathSelectors.any())
 			.build()
-			.securityContexts(Arrays.asList(securityContext())) // *
-			.securitySchemes(Arrays.asList(apiKey()));
+			.securityContexts(Collections.singletonList(securityContext())) // *
+			.securitySchemes(List.of(apiKey()));
 	}
 
 	private ApiInfo apiInfo() {
@@ -53,5 +54,6 @@ public class SwaggerConfig {
 			"accessEveryThing");
 		AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
 		authorizationScopes[0] = authorizationScope;
-		return Arrays.asList(new SecurityReference("Authorization", authorizationScopes));	}
+		return List.of(new SecurityReference("Authorization", authorizationScopes));
+	}
 }

@@ -1,4 +1,4 @@
-package com.zerobase.carrot_auction.model;
+package com.zerobase.carrot_auction.dto.request;
 
 import com.zerobase.carrot_auction.repository.entity.code.Status;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductSearchForm extends CommonPageParam {
+public class ProductSearchRequest extends CommonPage {
+
 	private String searchWord;
 	private Boolean auctionYn;
 	private String siDo;

@@ -31,7 +31,6 @@ public class DealController {
 	@GetMapping("/{dealId}")
 	public ResponseEntity<Response> getDeal(@PathVariable Long dealId) {
 		DealDto dealDto = dealService.getDeal(dealId);
-		;
 		return ResponseEntity.ok(new Response("success", dealDto));
 	}
 
