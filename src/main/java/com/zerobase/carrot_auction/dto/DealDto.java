@@ -3,6 +3,7 @@ package com.zerobase.carrot_auction.dto;
 import com.zerobase.carrot_auction.exception.DealException;
 import com.zerobase.carrot_auction.exception.ErrorCode;
 import com.zerobase.carrot_auction.repository.entity.DealEntity;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
 public class DealDto {
 
     private Long id;
@@ -27,16 +29,17 @@ public class DealDto {
         this.createAt = createAt;
     }
 
+
     public static DealDto fromEntity(DealEntity entity) {
         if (entity == null) {
             throw new DealException(ErrorCode.NOT_FOUND_DEAL);
         }
-        return new DealDto(
-                entity.getId(),
-                entity.getProduct().getId(),
-                entity.getCustomer().getId(),
-                entity.getPrice(),
-                entity.getCreateAt()
-        );
+        return DealDto.builder()
+                .id(entity.getId())
+                .customerId(entity.getCustomer().getId())
+                .productId(entity.getProduct().getId())
+                .price(entity.getPrice())
+                .build();
+
     }
 }

@@ -1,9 +1,6 @@
 package com.zerobase.carrot_auction.repository.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -17,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+@Builder
 public class DealEntity {
 
     @Id
@@ -36,10 +34,21 @@ public class DealEntity {
     @CreatedDate
     private LocalDateTime createAt; // 거래 신청시간
 
+<<<<<<<HEAD
+
     public DealEntity(ProductEntity product, UserEntity customer, int price) {
         this.product = product;
         this.customer = customer;
         this.price = price;
     }
+=======
+
+    public DealEntity(ProductEntity product, UserEntity customer, int price, LocalDateTime createAt) {
+        this.product = product;
+        this.customer = customer;
+        this.price = price;
+        this.createAt = createAt;
+    }
+>>>>>>>main
 
 }
