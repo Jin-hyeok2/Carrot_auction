@@ -34,14 +34,7 @@ public class DealEntity {
     @CreatedDate
     private LocalDateTime createAt; // 거래 신청시간
 
-<<<<<<<HEAD
 
-    public DealEntity(ProductEntity product, UserEntity customer, int price) {
-        this.product = product;
-        this.customer = customer;
-        this.price = price;
-    }
-=======
 
     public DealEntity(ProductEntity product, UserEntity customer, int price, LocalDateTime createAt) {
         this.product = product;
@@ -49,6 +42,5 @@ public class DealEntity {
         this.price = price;
         this.createAt = createAt;
     }
->>>>>>>main
 
 }

@@ -2,6 +2,7 @@ package com.zerobase.carrot_auction.service;
 
 import com.zerobase.carrot_auction.dto.request.UserReq;
 import com.zerobase.carrot_auction.dto.response.ProductDto;
+import com.zerobase.carrot_auction.exception.AuthException;
 import com.zerobase.carrot_auction.repository.DealRepository;
 import com.zerobase.carrot_auction.repository.ProductRepository;
 import com.zerobase.carrot_auction.repository.UserRepository;
@@ -32,7 +33,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return this.userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Email: " + email + " not found"));
+                .orElseThrow(() -> new RuntimeException("email = " + email + " not found"));
     }
 
     public UserEntity signUp(UserReq.SignUp request) {
@@ -41,13 +42,13 @@ public class UserService implements UserDetailsService {
         boolean isExistPhone = this.userRepository.existsByNickname(request.getNickname());
 
         if (isExistEmail) {
-            throw new RuntimeException("이미 사용 중인 아이디입니다.");
+            throw new AuthException(AuthException.ErrorCode.ALREADY_USING_EMAIL);
         }
         if (isExistNickname) {
-            throw new RuntimeException("이미 사용 중인 닉네임입니다.");
+            throw new AuthException(AuthException.ErrorCode.ALREADY_USING_NICKNAME);
         }
         if (isExistPhone) {
-            throw new RuntimeException("이미 사용 중인 핸드폰 번호입니다.");
+            throw new AuthException(AuthException.ErrorCode.ALREADY_USING_PHONE);
         }
         request.setPassword(this.passwordEncoder.encode(request.getPassword()));
         UserEntity user = request.dtoToEntity();
@@ -61,23 +62,23 @@ public class UserService implements UserDetailsService {
 
     public void verifyMail(UserReq.VerifyMail request) {
         UserEntity user = userRepository.findById(request.getId())
-                .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다"));
+                .orElseThrow(() -> new AuthException(AuthException.ErrorCode.NOT_FOUND_USER));
         if (request.getAuthCode().equals(user.getAuthCode())) {
             user.setAuth(true);
             userRepository.save(user);
         } else {
-            throw new RuntimeException("인증코드가 맞지 않습니다");
+            throw new AuthException(AuthException.ErrorCode.NOT_CORRECT_AUTH_CODE);
         }
     }
 
     public UserEntity signIn(UserReq.SignIn request) {
         UserEntity user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다"));
+                .orElseThrow(() -> new AuthException(AuthException.ErrorCode.NOT_FOUND_USER));
         if (!user.isAuth()) {
-            throw new RuntimeException("이메일 인증이 완료되지 않았습니다");
+            throw new AuthException(AuthException.ErrorCode.UNAUTHORIZED_EMAIL);
         }
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다");
+            throw new AuthException(AuthException.ErrorCode.NOT_CORRECT_PASSWORD);
         }
 
         return user;
@@ -85,7 +86,7 @@ public class UserService implements UserDetailsService {
 
     public UserEntity getInfo(String email) {
         UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다"));
+                .orElseThrow(() -> new AuthException(AuthException.ErrorCode.NOT_FOUND_USER));
 
         return user;
     }
@@ -114,28 +115,28 @@ public class UserService implements UserDetailsService {
 
     public UserEntity editInfo(String userEmail, UserReq.EditInfo request) {
         UserEntity user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다"));
+                .orElseThrow(() -> new AuthException(AuthException.ErrorCode.NOT_FOUND_USER));
         log.info(request.toString());
         if (!passwordEncoder.matches(request.getCurPassword(), user.getPassword())) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다");
+            throw new AuthException(AuthException.ErrorCode.NOT_CORRECT_PASSWORD);
         }
 
         if (request.getPassword() != null) {
-            log.info("비밀번호 변경 요청");
+//            log.info("비밀번호 변경 요청");
             if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-                throw new RuntimeException("변경 전 비밀번호와 변경 비밀번호가 같습니다");
+                throw new AuthException(AuthException.ErrorCode.NOT_NEW_PASSWORD);
             }
             user.setPassword(passwordEncoder.encode(request.getPassword()));
         } else if (request.getNickname() != null) {
-            log.info("닉네임 변경 요청");
+//            log.info("닉네임 변경 요청");
             if (userRepository.existsByNickname(request.getNickname())) {
-                throw new RuntimeException("이미 가입된 닉네임이 있습니다");
+                throw new AuthException(AuthException.ErrorCode.ALREADY_USING_NICKNAME);
             }
             user.setNickname(request.getNickname());
         } else if (request.getPhone() != null) {
-            log.info("연락처 변경 요청");
+//            log.info("연락처 변경 요청");
             if (userRepository.existsByPhone(request.getPhone())) {
-                throw new RuntimeException("이미 가입된 번호가 있습니다");
+                throw new AuthException(AuthException.ErrorCode.ALREADY_USING_PHONE);
             }
             user.setPhone(request.getPhone());
         } else {
@@ -151,7 +152,7 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new RuntimeException(""));
 
         return productRepository.findAllBySeller(pageRequest, user)
-                .map(product -> ProductDto.of(product));
+                .map(ProductDto::of);
     }
 
     public Page<ProductDto> getPurchaseListByEmail(String userEmail, int page, int size) {

@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TokenProvider {
 
-    private static final long TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 2; //2시간 만료
-    //	private static final long TOKEN_EXPIRE_TIME = 1000; //1초 만료
+//    private static final long TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 2; //2시간 만료
+    	private static final long TOKEN_EXPIRE_TIME = 1000; //1초 만료
     private static final String KEY_ROLES = "roles";
 
     private final UserService userService;
