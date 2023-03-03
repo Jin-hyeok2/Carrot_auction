@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public class PagingException extends RuntimeException {
 
-	private final ErrorCode errorCode;
+    private final ErrorCode errorCode;
 
-	public PagingException(ErrorCode errorCode) {
-		super(errorCode.getDetail());
-		this.errorCode = errorCode;
-	}
+    public PagingException(ErrorCode errorCode) {
+        super(errorCode.getDetail());
+        this.errorCode = errorCode;
+    }
 }

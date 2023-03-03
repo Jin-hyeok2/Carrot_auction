@@ -1,4 +1,4 @@
-package com.zerobase.carrot_auction.dto;
+package com.zerobase.carrot_auction.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +7,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class Response {
 
-	private String message;
-	private Object data;
+    private String message;
+    private Object data;
 }
