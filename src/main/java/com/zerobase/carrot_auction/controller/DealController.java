@@ -3,6 +3,7 @@ package com.zerobase.carrot_auction.controller;
 import com.zerobase.carrot_auction.dto.DealDto;
 import com.zerobase.carrot_auction.dto.Response;
 import com.zerobase.carrot_auction.service.DealService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/deals")
+@RequiredArgsConstructor
 public class DealController {
 
-	@Autowired
-	private DealService dealService;
+	private final DealService dealService;
 
 	@PostMapping
 	public ResponseEntity<Response> createDeal(@RequestBody DealDto dealDto) {

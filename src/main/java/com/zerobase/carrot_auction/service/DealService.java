@@ -10,6 +10,7 @@ import com.zerobase.carrot_auction.repository.entity.DealEntity;
 import com.zerobase.carrot_auction.repository.entity.ProductEntity;
 import com.zerobase.carrot_auction.repository.entity.UserEntity;
 import com.zerobase.carrot_auction.repository.entity.code.Status;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,16 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class DealService {
 
-	@Autowired
-	private DealRepository dealRepository;
+	private final DealRepository dealRepository;
 
-	@Autowired
-	private ProductRepository productRepository;
+	private final ProductRepository productRepository;
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
 	public DealDto createDeal(DealDto dealDto) {
 		ProductEntity product = productRepository.findById(dealDto.getProductId())
@@ -34,12 +33,17 @@ public class DealService {
 		UserEntity customer = userRepository.findById(dealDto.getCustomerId())
 			.orElseThrow(() -> new DealException(ErrorCode.NOT_FOUND_USER));
 
-		DealEntity dealEntity = new DealEntity();
-		dealEntity.setProduct(product);
-		dealEntity.setCustomer(customer);
+		DealEntity dealEntity = DealEntity.builder()
+				.product(product)
+				.customer(customer)
+				.build();
+
+		if (product.getStatus() == Status.DEL) {
+			throw new DealException(ErrorCode.DELETE_PRODUCT);
+		}
 
 		if (product.isAuctionYn()) { // 경매거래인 경우
-			if (dealDto.getPrice() < product.getPrice()) {
+			if (dealDto.getPrice() <= product.getPrice()) {
 				throw new DealException(ErrorCode.INVALID_PRICE);
 			}
 			dealEntity.setPrice(dealDto.getPrice());

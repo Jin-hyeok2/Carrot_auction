@@ -10,10 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -24,6 +22,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+@Builder
 public class DealEntity {
 
 	@Id
@@ -43,10 +42,11 @@ public class DealEntity {
 	@CreatedDate
 	private LocalDateTime createAt; // 거래 신청시간
 
-	public DealEntity(ProductEntity product, UserEntity customer, int price) {
+	public DealEntity(ProductEntity product, UserEntity customer, int price, LocalDateTime createAt) {
 		this.product = product;
 		this.customer = customer;
 		this.price = price;
+		this.createAt = createAt;
 	}
 
 }
