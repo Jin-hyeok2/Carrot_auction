@@ -1,8 +1,9 @@
 package com.zerobase.carrot_auction.controller;
 
-import com.zerobase.carrot_auction.dto.Response;
-import com.zerobase.carrot_auction.dto.User;
-import com.zerobase.carrot_auction.dto.reponse.ProductDto;
+import com.zerobase.carrot_auction.dto.response.Response;
+import com.zerobase.carrot_auction.dto.request.UserReq;
+import com.zerobase.carrot_auction.dto.response.ProductDto;
+import com.zerobase.carrot_auction.dto.response.UserRes;
 import com.zerobase.carrot_auction.repository.entity.UserEntity;
 import com.zerobase.carrot_auction.security.TokenProvider;
 import com.zerobase.carrot_auction.service.UserService;
@@ -29,26 +30,25 @@ public class UserController {
     private final TokenProvider tokenProvider;
 
     @PostMapping("/signup")
-    public ResponseEntity<Response> signUp(@RequestBody User.Request.SignUp request) {
+    public ResponseEntity<Response> signUp(@RequestBody UserReq.SignUp request) {
         UserEntity user = userService.signUp(request);
 //		log.info(user.toString());
-        User.Response.Signup data = new User.Response.Signup(user);
+        UserRes.Signup data = new UserRes.Signup(user);
 
         return ResponseEntity.ok(new Response("success", data));
     }
 
     @PutMapping("/verify")
-    public ResponseEntity<Response> verify(@RequestBody User.Request.VerifyMail request) {
+    public ResponseEntity<Response> verify(@RequestBody UserReq.VerifyMail request) {
         userService.verifyMail(request);
 
 		return ResponseEntity.ok(new Response("success", null));
 	}
 
     @PostMapping("/signin")
-    public ResponseEntity<Response> signIn(@RequestBody User.Request.SignIn request) {
-        User.Response.TokenResponse data = new User.Response.TokenResponse();
+    public ResponseEntity<Response> signIn(@RequestBody UserReq.SignIn request) {
+        UserRes.TokenResponse data = new UserRes.TokenResponse();
         UserEntity user = userService.signIn(request);
-//		log.info(user.toString());
         data.setToken(tokenProvider.generateToken(user.getEmail(), user.getRoles()));
         return ResponseEntity.ok(new Response("success", data));
     }
@@ -56,16 +56,16 @@ public class UserController {
     @GetMapping("/getInfo")
     public ResponseEntity<Response> getInfo(@RequestHeader(name = "Authorization") String token) {
         String userEmail = tokenProvider.getEmail(token.substring("Bearer ".length()));
-        User.Response.GetInfo data = new User.Response.GetInfo(userService.getInfo(userEmail));
+        UserRes.GetInfo data = new UserRes.GetInfo(userService.getInfo(userEmail));
 
         return ResponseEntity.ok(new Response("success", data));
     }
 
     @PutMapping("/editInfo")
     public ResponseEntity<Response> editInfo(@RequestHeader(name = "Authorization") String token,
-                                             @RequestBody User.Request.EditInfo request) {
+                                             @RequestBody UserReq.EditInfo request) {
         String userEmail = tokenProvider.getEmail(token.substring("Bearer ".length()));
-        User.Response.GetInfo data = new User.Response.GetInfo(userService.editInfo(userEmail, request));
+        UserRes.GetInfo data = new UserRes.GetInfo(userService.editInfo(userEmail, request));
         return ResponseEntity.ok(new Response("success", data));
     }
 

@@ -1,7 +1,7 @@
 package com.zerobase.carrot_auction.controller;
 
 import com.zerobase.carrot_auction.dto.DealDto;
-import com.zerobase.carrot_auction.dto.Response;
+import com.zerobase.carrot_auction.dto.response.Response;
 import com.zerobase.carrot_auction.service.DealService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

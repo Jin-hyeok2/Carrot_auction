@@ -1,8 +1,8 @@
-package com.zerobase.carrot_auction.dto;
+package com.zerobase.carrot_auction.dto.request;
 
 import lombok.Data;
 
-public class Mail {
+public class MailSender {
 
 	public static class Request {
 

@@ -3,7 +3,7 @@ package com.zerobase.carrot_auction.service.ImpI;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.zerobase.carrot_auction.dto.reponse.ProductDto;
+import com.zerobase.carrot_auction.dto.response.ProductDto;
 import com.zerobase.carrot_auction.dto.request.ProductCreateRequest;
 import com.zerobase.carrot_auction.dto.request.ProductSearchRequest;
 import com.zerobase.carrot_auction.exception.ErrorCode;

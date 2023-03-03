@@ -1,7 +1,7 @@
 package com.zerobase.carrot_auction.service;
 
 import com.github.pagehelper.Page;
-import com.zerobase.carrot_auction.dto.reponse.ProductDto;
+import com.zerobase.carrot_auction.dto.response.ProductDto;
 import com.zerobase.carrot_auction.dto.request.ProductCreateRequest;
 import com.zerobase.carrot_auction.dto.request.ProductSearchRequest;
 

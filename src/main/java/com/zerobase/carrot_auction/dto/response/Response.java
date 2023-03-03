@@ -1,4 +1,4 @@
-package com.zerobase.carrot_auction.dto;
+package com.zerobase.carrot_auction.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

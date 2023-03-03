@@ -1,4 +1,4 @@
-package com.zerobase.carrot_auction.dto.reponse;
+package com.zerobase.carrot_auction.dto.response;
 
 import com.zerobase.carrot_auction.repository.entity.ProductEntity;
 import com.zerobase.carrot_auction.repository.entity.code.Status;

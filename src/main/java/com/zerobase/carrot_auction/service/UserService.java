@@ -1,7 +1,7 @@
 package com.zerobase.carrot_auction.service;
 
-import com.zerobase.carrot_auction.dto.User;
-import com.zerobase.carrot_auction.dto.reponse.ProductDto;
+import com.zerobase.carrot_auction.dto.request.UserReq;
+import com.zerobase.carrot_auction.dto.response.ProductDto;
 import com.zerobase.carrot_auction.repository.DealRepository;
 import com.zerobase.carrot_auction.repository.ProductRepository;
 import com.zerobase.carrot_auction.repository.UserRepository;
@@ -34,7 +34,7 @@ public class UserService implements UserDetailsService {
 			.orElseThrow(() -> new RuntimeException("Email: " + email + " not found"));
 	}
 
-	public UserEntity signUp(User.Request.SignUp request) {
+	public UserEntity signUp(UserReq.SignUp request) {
 		boolean isExistEmail = this.userRepository.existsByEmail(request.getEmail());
 		boolean isExistNickname = this.userRepository.existsByNickname(request.getNickname());
 		boolean isExistPhone = this.userRepository.existsByNickname(request.getNickname());
@@ -58,7 +58,7 @@ public class UserService implements UserDetailsService {
 		return user;
 	}
 
-	public void verifyMail(User.Request.VerifyMail request) {
+	public void verifyMail(UserReq.VerifyMail request) {
 		UserEntity user = userRepository.findById(request.getId())
 			.orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다"));
 		if (request.getAuthCode().equals(user.getAuthCode())) {
@@ -69,7 +69,7 @@ public class UserService implements UserDetailsService {
 		}
 	}
 
-	public UserEntity signIn(User.Request.SignIn request) {
+	public UserEntity signIn(UserReq.SignIn request) {
 		UserEntity user = userRepository.findByEmail(request.getEmail())
 			.orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다"));
 		if (!user.isAuth()) {
@@ -111,7 +111,7 @@ public class UserService implements UserDetailsService {
 		return key.toString();
 	}
 
-	public UserEntity editInfo(String userEmail, User.Request.EditInfo request) {
+	public UserEntity editInfo(String userEmail, UserReq.EditInfo request) {
 		UserEntity user = userRepository.findByEmail(userEmail)
 			.orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다"));
 		log.info(request.toString());
