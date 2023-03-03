@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CommonPage {
 
-    private long pageNum = 1;
-    private long pageSize = 10;
+	private long pageNum = 1;
+	private long pageSize = 10;
 }

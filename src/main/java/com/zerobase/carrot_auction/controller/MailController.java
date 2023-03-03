@@ -15,11 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/mail")
 public class MailController {
 
-    private final MailServiceImpl mailService;
+	private final MailServiceImpl mailService;
 
-    @GetMapping
-    public ResponseEntity<?> sendMail(@RequestBody MailSender.Request.SendMail request) throws Exception {
-        mailService.sendMessage(request.getId());
-        return ResponseEntity.ok(new Response("success", null));
-    }
+	@GetMapping
+	public ResponseEntity<?> sendMail(@RequestBody MailSender.Request.SendMail request)
+		throws Exception {
+		mailService.sendMessage(request.getId());
+		return ResponseEntity.ok(new Response("success", null));
+	}
 }

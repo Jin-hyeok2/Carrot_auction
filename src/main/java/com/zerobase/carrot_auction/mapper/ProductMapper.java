@@ -8,5 +8,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ProductMapper {
 
-    Page<ProductDto> selectList(ProductSearchRequest parameter);
+	Page<ProductDto> selectList(ProductSearchRequest parameter);
 }

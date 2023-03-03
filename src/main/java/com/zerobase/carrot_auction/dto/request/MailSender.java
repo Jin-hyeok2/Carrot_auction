@@ -4,12 +4,12 @@ import lombok.Data;
 
 public class MailSender {
 
-    public static class Request {
+	public static class Request {
 
-        @Data
-        public static class SendMail {
+		@Data
+		public static class SendMail {
 
-            private Long id;
-        }
-    }
+			private Long id;
+		}
+	}
 }
