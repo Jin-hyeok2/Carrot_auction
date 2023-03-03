@@ -47,6 +47,7 @@ public class DealService {
             }
             dealEntity.setPrice(dealDto.getPrice());
             product.setPrice(dealDto.getPrice());
+            product.setStatus(Status.BIDDING);
         } else {
             dealEntity.setPrice(product.getPrice());
         }
