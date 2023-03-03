@@ -13,38 +13,38 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 public class ExceptionController {
 
-	@ExceptionHandler({ProductException.class})
-	public ResponseEntity<ExceptionResponse> productException(
-		final ProductException productException) {
-		log.warn("api Exception : {}", productException.getErrorCode());
-		return ResponseEntity.badRequest()
-			.body(new ExceptionResponse(productException.getMessage(),
-				productException.getErrorCode()));
-	}
+    @ExceptionHandler({ProductException.class})
+    public ResponseEntity<ExceptionResponse> productException(
+            final ProductException productException) {
+        log.warn("api Exception : {}", productException.getErrorCode());
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(productException.getMessage(),
+                        productException.getErrorCode()));
+    }
 
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ValidationErrorResponse> processValidationError(
-		MethodArgumentNotValidException ex) {
-		FieldError fieldError = ex.getBindingResult().getFieldErrors().get(0);
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ValidationErrorResponse> processValidationError(
+            MethodArgumentNotValidException ex) {
+        FieldError fieldError = ex.getBindingResult().getFieldErrors().get(0);
 
-		return ResponseEntity.badRequest()
-			.body(new ValidationErrorResponse(fieldError.getDefaultMessage(),
-				fieldError.getCode()));
-	}
+        return ResponseEntity.badRequest()
+                .body(new ValidationErrorResponse(fieldError.getDefaultMessage(),
+                        fieldError.getCode()));
+    }
 
-	@Getter
-	@AllArgsConstructor
-	public static class ValidationErrorResponse {
+    @Getter
+    @AllArgsConstructor
+    public static class ValidationErrorResponse {
 
-		private String message;
-		private String errorCode;
-	}
+        private String message;
+        private String errorCode;
+    }
 
-	@Getter
-	@AllArgsConstructor
-	public static class ExceptionResponse {
+    @Getter
+    @AllArgsConstructor
+    public static class ExceptionResponse {
 
-		private String message;
-		private ErrorCode errorCode;
-	}
+        private String message;
+        private ErrorCode errorCode;
+    }
 }

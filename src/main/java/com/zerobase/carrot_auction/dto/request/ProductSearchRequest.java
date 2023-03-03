@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ProductSearchRequest extends CommonPage {
 
-	private String searchWord;
-	private Boolean auctionYn;
-	private String siDo;
-	private String guGun;
-	private Long productId;
-	final private Status status = Status.DEL;
+    private String searchWord;
+    private Boolean auctionYn;
+    private String siDo;
+    private String guGun;
+    private Long productId;
+    final private Status status = Status.DEL;
 
 }

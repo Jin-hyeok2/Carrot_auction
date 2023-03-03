@@ -1,60 +1,60 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zerobase.carrot_auction.mapper.ProductMapper">
-  <resultMap id="productSelectRM" type="com.zerobase.carrot_auction.dto.response.ProductDto">
-    <id property="id" column="id"/>
-    <result property="createAt" column="create_at"/>
-    <result property="description" column="description"/>
-    <result property="endPeriod" column="end_period"/>
-    <result property="guGun" column="gu_gun"/>
-    <result property="isAuction" column="is_auction"/>
-    <result property="price" column="price"/>
-    <result property="siDo" column="si_do"/>
-    <result property="status" column="status"/>
-    <result property="title" column="title"/>
-    <association property="sellerNickname" column="seller_id" select="selectUser"/>
-    <association property="customerNickname" column="customer_id" select="selectUser"/>
-  </resultMap>
+    <resultMap id="productSelectRM" type="com.zerobase.carrot_auction.dto.response.ProductDto">
+        <id property="id" column="id"/>
+        <result property="createAt" column="create_at"/>
+        <result property="description" column="description"/>
+        <result property="endPeriod" column="end_period"/>
+        <result property="guGun" column="gu_gun"/>
+        <result property="isAuction" column="is_auction"/>
+        <result property="price" column="price"/>
+        <result property="siDo" column="si_do"/>
+        <result property="status" column="status"/>
+        <result property="title" column="title"/>
+        <association property="sellerNickname" column="seller_id" select="selectUser"/>
+        <association property="customerNickname" column="customer_id" select="selectUser"/>
+    </resultMap>
 
-  <sql id="selectListWhere">
-    <if test="searchWord != null">
-      AND title LIKE CONCAT('%', #{searchWord}, '%')
-    </if>
-    <if test="siDo != null">
-      AND si_do LIKE CONCAT('%', #{siDo}, '%')
-      <if test="guGun != null">
-        AND gu_gun LIKE CONCAT('%', #{guGun}, '%')
-      </if>
-    </if>
-    <if test="auctionYn != null ">
-      <choose>
-        <when test="auctionYn = 1">
-          AND auction_yn = 1
-        </when>
-        <otherwise>
-          AND auction_yn = 0
-        </otherwise>
-      </choose>
-    </if>
-    AND status != 'DEL'
-  </sql>
+    <sql id="selectListWhere">
+        <if test="searchWord != null">
+            AND title LIKE CONCAT('%', #{searchWord}, '%')
+        </if>
+        <if test="siDo != null">
+            AND si_do LIKE CONCAT('%', #{siDo}, '%')
+            <if test="guGun != null">
+                AND gu_gun LIKE CONCAT('%', #{guGun}, '%')
+            </if>
+        </if>
+        <if test="auctionYn != null ">
+            <choose>
+                <when test="auctionYn = 1">
+                    AND auction_yn = 1
+                </when>
+                <otherwise>
+                    AND auction_yn = 0
+                </otherwise>
+            </choose>
+        </if>
+        AND status != 'DEL'
+    </sql>
 
-  <select id="selectList"
-    parameterType="com.zerobase.carrot_auction.dto.request.ProductSearchRequest"
-    resultType="com.zerobase.carrot_auction.repository.entity.ProductEntity"
-    resultMap="productSelectRM">
-    SELECT *
-    FROM product
-    WHERE 1 = 1
-    <include refid="selectListWhere"/>
-    ORDER BY create_at DESC
-  </select>
+    <select id="selectList"
+            parameterType="com.zerobase.carrot_auction.dto.request.ProductSearchRequest"
+            resultType="com.zerobase.carrot_auction.repository.entity.ProductEntity"
+            resultMap="productSelectRM">
+        SELECT *
+        FROM product
+        WHERE 1 = 1
+        <include refid="selectListWhere"/>
+        ORDER BY create_at DESC
+    </select>
 
-  <select id="selectUser" resultType="String">
-    SELECT nickname
-    FROM users
-    WHERE id = #{0}
-  </select>
+    <select id="selectUser" resultType="String">
+        SELECT nickname
+        FROM users
+        WHERE id = #{0}
+    </select>
 </mapper>

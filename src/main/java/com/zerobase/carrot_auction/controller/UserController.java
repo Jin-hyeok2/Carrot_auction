@@ -1,8 +1,8 @@
 package com.zerobase.carrot_auction.controller;
 
-import com.zerobase.carrot_auction.dto.response.Response;
 import com.zerobase.carrot_auction.dto.request.UserReq;
 import com.zerobase.carrot_auction.dto.response.ProductDto;
+import com.zerobase.carrot_auction.dto.response.Response;
 import com.zerobase.carrot_auction.dto.response.UserRes;
 import com.zerobase.carrot_auction.repository.entity.UserEntity;
 import com.zerobase.carrot_auction.security.TokenProvider;
@@ -10,15 +10,8 @@ import com.zerobase.carrot_auction.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -42,8 +35,8 @@ public class UserController {
     public ResponseEntity<Response> verify(@RequestBody UserReq.VerifyMail request) {
         userService.verifyMail(request);
 
-		return ResponseEntity.ok(new Response("success", null));
-	}
+        return ResponseEntity.ok(new Response("success", null));
+    }
 
     @PostMapping("/signin")
     public ResponseEntity<Response> signIn(@RequestBody UserReq.SignIn request) {
@@ -75,20 +68,20 @@ public class UserController {
 
     @GetMapping("/purchase")
     public ResponseEntity<Response> purchaseHistory(@RequestHeader(name = "Authorization") String token,
-                                                    @RequestBody PageRequest pageRequest) {
+                                                    @RequestParam int pageNum, @RequestParam int size) {
         String userEmail = tokenProvider.getEmail(token.substring("Bearer".length()));
-        Page<ProductDto> page = userService.getPurchaseListByEmail(userEmail, pageRequest.getPageNumber(), pageRequest.getPageSize());
+        Page<ProductDto> page = userService.getPurchaseListByEmail(userEmail, pageNum, size);
 
         return ResponseEntity.ok(new Response("", page));
     }
 
     @GetMapping("/sales")
     public ResponseEntity<Response> salesHistory(@RequestHeader(name = "Authorization") String token,
-                                                 @RequestBody PageRequest pageRequest) {
+                                                 @RequestParam int pageNum, @RequestParam int size) {
         String userEmail = tokenProvider.getEmail(token.substring("Bearer".length()));
-        Page<ProductDto> page = userService.getSalesListByEmail(userEmail, pageRequest.getPageNumber(), pageRequest.getPageSize());
+        Page<ProductDto> page = userService.getSalesListByEmail(userEmail, pageNum, size);
 
-        return ResponseEntity.ok(new Response("", page));
+        return ResponseEntity.ok(new Response("success", page));
     }
 
 }
